@@ -7,6 +7,7 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.support.ReloadableResourceBundleMessageSource;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.web.servlet.DispatcherServlet;
 import org.springframework.web.servlet.HandlerExceptionResolver;
 import org.springframework.web.servlet.LocaleResolver;
@@ -44,22 +45,28 @@ public class WebConfig implements WebMvcConfigurer{
     }
 
     @Bean
-    public LocaleChangeInterceptor localeChangeInterceptor(){
+    public LocaleChangeInterceptor localeChangeInterceptor() {
         LocaleChangeInterceptor interceptor = new LocaleChangeInterceptor();
         interceptor.setParamName("lang");
         return interceptor;
     }
 
-//    @Bean
-//    public DispatcherServlet dispatcherServlet() {
-//        DispatcherServlet ds = new DispatcherServlet();
-//        ds.setThrowExceptionIfNoHandlerFound(true);
-//        return ds;
-//    }
+    @Bean
+    public BCryptPasswordEncoder encoder(){
+        return new BCryptPasswordEncoder();
+    }
 
     @Override
     public void addInterceptors(InterceptorRegistry registry) {
         registry.addInterceptor(localeChangeInterceptor());
+
+        registry.addInterceptor(new AuthorizationInterceptor())
+                .addPathPatterns("/tutor/*")
+                .addPathPatterns("/administrator/*")
+                .addPathPatterns("/student/*");
+        //todo: add exclude patterns
+//                .excludePathPatterns("/")
+
     }
 
     @Override

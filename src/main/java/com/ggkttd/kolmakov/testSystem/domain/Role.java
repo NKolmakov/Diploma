@@ -1,5 +1,6 @@
 package com.ggkttd.kolmakov.testSystem.domain;
 
+import com.ggkttd.kolmakov.testSystem.utils.UserRoles;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -21,16 +22,7 @@ public class Role {
 
     @NotBlank
     @Size(max = 20,message = "Invalid role name length")
-    private String name;
+    @Enumerated(value = EnumType.STRING)
+    private UserRoles name;
 
-    private boolean read;
-
-    @Column(name = "pass_test")
-    private boolean passTest;
-
-    @Column(name = "create_user")
-    private boolean createUser;
-
-    @Column(name = "super_user")
-    private boolean superUser;
 }

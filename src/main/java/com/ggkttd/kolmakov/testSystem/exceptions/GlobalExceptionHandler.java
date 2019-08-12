@@ -1,5 +1,6 @@
 package com.ggkttd.kolmakov.testSystem.exceptions;
 
+import org.apache.log4j.Logger;
 import org.springframework.http.HttpStatus;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.ControllerAdvice;
@@ -13,19 +14,14 @@ import javax.servlet.http.HttpServletRequest;
 @ControllerAdvice
 @EnableWebMvc
 public class GlobalExceptionHandler{
+    private static final Logger LOGGER = Logger.getLogger(GlobalExceptionHandler.class);
 
-    @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
-
-    @ExceptionHandler(value = TestException.class)
-    public ModelAndView exceptionClassHandler(HttpServletRequest request, Model model, Exception ex){
-       // LOGGER.info("Error: "+ex.getMessage());
-        model.addAttribute("status",500);
-        model.addAttribute("message","INTERNAL_SERVER_ERROR");
-        return new ModelAndView("customErrorPage");
+    @ExceptionHandler(value = NotFoundException.class)
+    public ModelAndView getNotFoundMessage(Exception ex){
+        LOGGER.warn(ex.getMessage());
+        ModelAndView modelAndView = new ModelAndView();
+        modelAndView.addObject("status",HttpStatus.NOT_FOUND);
+        modelAndView.addObject("message",ex.getMessage());
+        return modelAndView;
     }
-
-//    @ExceptionHandler(value = Throwable.class)
-//    public ModelAndView throwableClassHandler(){
-//        return new ModelAndView("customErrorPage");
-//    }
 }

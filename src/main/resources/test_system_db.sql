@@ -4,11 +4,7 @@ use test_system;
 
 create table if not exists `role`(
 	id bigint unsigned not null auto_increment primary key,
-    name varchar(20) not null,
-    `read` bool,
-    pass_test bool,
-    create_test bool,
-    super_user bool
+    name varchar(20) not null
 );
 
 create table if not exists `group`(
