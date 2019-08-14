@@ -22,6 +22,11 @@ public class AuthorizationController {
     @Autowired
     private GroupService groupService;
 
+    @GetMapping(value = "/")
+    public String getIndexPage(){
+        return "authorization";
+    }
+
     @GetMapping(value = "/authorization")
     public String getAuthorizationForm(){
         return "authorization";
