@@ -13,6 +13,7 @@ import org.springframework.web.servlet.i18n.SessionLocaleResolver;
 import java.util.Locale;
 
 @Configuration
+@ComponentScan(basePackages = "com.ggkttd.kolmakov.testSystem")
 public class WebConfig implements WebMvcConfigurer{
     @Bean
     public LocaleResolver localeResolver(){
