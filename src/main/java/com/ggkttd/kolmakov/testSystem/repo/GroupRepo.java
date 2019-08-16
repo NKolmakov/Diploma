@@ -8,6 +8,7 @@ import org.springframework.stereotype.Repository;
 
 @Repository
 public interface GroupRepo extends JpaRepository<Group,Long> {
-    @Query(value = "select * from group g where g.name like :name",nativeQuery = true)
+    //language=sql
+    @Query(value = "select * from user_group g where g.name like :name",nativeQuery = true)
     Group getGroupByName(@Param("name") String name);
 }

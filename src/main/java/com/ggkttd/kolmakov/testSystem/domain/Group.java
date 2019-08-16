@@ -8,7 +8,7 @@ import javax.persistence.*;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.Size;
 
-@Table
+@Table(name = "user_group")
 @Entity
 @Data
 @AllArgsConstructor

@@ -3,7 +3,6 @@ package com.ggkttd.kolmakov.testSystem.domain;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import lombok.ToString;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotBlank;
@@ -36,9 +35,13 @@ public class User {
     @Size(max = 50,message = "Invalid user password length")
     private String password;
 
-    @ManyToOne
+    @ManyToOne(cascade = CascadeType.PERSIST)
     @JoinColumn(name = "role_id")
     private Role role;
+
+    @ManyToOne(cascade = CascadeType.PERSIST)
+    @JoinColumn(name = "user_group_id")
+    private Group group;
 
     private boolean isAuthorized;
 }

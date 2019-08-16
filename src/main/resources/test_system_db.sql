@@ -7,7 +7,7 @@ create table if not exists `role`(
     name varchar(20) not null
 );
 
-create table if not exists `group`(
+create table if not exists user_group(
 	id bigint unsigned not null auto_increment primary key,
     name varchar(20) not null
 );
@@ -19,13 +19,13 @@ create table if not exists user(
     login varchar(30) not null,
     password varchar(50) not null,
     role_id bigint unsigned,
-    group_id bigint unsigned,
+    user_group_id bigint unsigned,
 
     foreign key (role_id) references role(id)
     on update cascade
     on delete set null,
 
-    foreign key (group_id) references `group`(id)
+    foreign key (user_group_id) references `group`(id)
     on update cascade
     on delete set null
 );

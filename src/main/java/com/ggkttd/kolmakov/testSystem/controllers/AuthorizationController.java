@@ -10,6 +10,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 
 import javax.servlet.http.HttpSession;
 import javax.validation.Valid;
@@ -46,7 +47,7 @@ public class AuthorizationController {
     }
 
     @PostMapping(value = "/signIn")
-    public String resolveMainPage(@Valid User userFromClient, ModelMap modelMap, HttpSession session){
+    public String resolveMainPage(@RequestBody @Valid User userFromClient, ModelMap modelMap, HttpSession session){
         User user = userService.checkAuthorization(userFromClient);
         if(user.isAuthorized()){
             session.setAttribute("user",user);

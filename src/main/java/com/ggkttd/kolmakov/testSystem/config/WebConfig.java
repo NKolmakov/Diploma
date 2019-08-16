@@ -27,7 +27,7 @@ public class WebConfig implements WebMvcConfigurer{
         ReloadableResourceBundleMessageSource source = new ReloadableResourceBundleMessageSource();
         source.setDefaultEncoding("UTF-8");
         source.addBasenames(
-                "classpath:/localization/messages"
+                "classpath:/locales/messages"
         );
         return source;
     }
@@ -56,7 +56,7 @@ public class WebConfig implements WebMvcConfigurer{
                 .excludePathPatterns("/templates/**")
                 .excludePathPatterns("/css/**")
                 .excludePathPatterns("/img/**")
-                .excludePathPatterns("/localization/**")
+                .excludePathPatterns("/locales/**")
                 .excludePathPatterns("/static/**");
 
     }

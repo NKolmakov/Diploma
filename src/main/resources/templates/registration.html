@@ -12,11 +12,13 @@
 <body>
     <!-- header-->
     <div th:insert="fragments/general.html::header"></div>
-    <!--  body  -->
-    <form class="col-lg-6 col-md-6" action="signIn" method="post">
-        <div th:insert="fragments/form.html::authorization"></div>
-        <a th:href="@{/registration}" th:text="#{form.link.signUp}"></a>
-        <button class="btn btn-primary" type="submit" th:text="#{form.button.signIn}"></button>
+
+    <form class="col-lg-6 col-md-6" action="signUp" method="post">
+<!--        <div th:insert="fragments/form.html::registration"></div>-->
+<!--        <div  th:insert="fragments/form.html::authorization"></div>-->
+<!--        <a th:href="@{/authorization}" th:text="#{form.link.signIn}"></a>-->
+        <input hidden name="id" th:value="123">
+        <button class="btn btn-primary" type="submit" th:text="#{form.button.signUp}"></button>
     </form>
 
     <!--  Scripts  -->
@@ -32,5 +34,6 @@
             crossorigin="anonymous"></script>
     <script th:src="@{/js/script.js}"></script>
 </div>
+
 </body>
 </html>
