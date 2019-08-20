@@ -13,11 +13,10 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 public class Application {
 	public static void main(String[] args) {
 		SpringApplication.run(Application.class, args);
-		BCryptPasswordEncoder encoder = new BCryptPasswordEncoder();
-		System.out.println(encoder.encode("123"));
 	}
 }
-
+//-----------------------------------------------------------------
+//todo:HINT: to put object into object use structure: th:name="objects[index].nesteds[index].field"
 //todo: add error message in error view
 //todo: how to send localized message to view
 //todo: add institution of education to application

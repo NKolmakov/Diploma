@@ -88,7 +88,16 @@
             <option th:each="subject: ${subjects}"
                     th:value="${subject.id}" th:text="${subject.name}"></option>
         </select>
-        <div class="questionBlock"></div>
+
+        <div class="questionBlock">
+            <div class="question">
+                <h4 th:text="#{form.label.questionNumber}">1</h4>
+                <textarea th:name="questions[0].name" th:placeholder="#{form.placeholder.question}"></textarea>
+                <div class="answers">
+                    <input id="answer#0" th:name="questions[0].answers[0].name" type="text" th:placeholder="#{form.placeholder.answer}">
+                </div>
+            </div>
+        </div>
         <button class="btn btn-primary" type="submit" th:text="form.button.save"></button>
     </form>
 </div>
