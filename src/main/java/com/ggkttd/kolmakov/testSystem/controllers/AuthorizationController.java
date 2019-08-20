@@ -2,22 +2,26 @@ package com.ggkttd.kolmakov.testSystem.controllers;
 
 import com.ggkttd.kolmakov.testSystem.domain.Group;
 import com.ggkttd.kolmakov.testSystem.domain.User;
+import com.ggkttd.kolmakov.testSystem.domain.forms.UserForm;
 import com.ggkttd.kolmakov.testSystem.services.GroupService;
 import com.ggkttd.kolmakov.testSystem.services.UserService;
+import com.ggkttd.kolmakov.testSystem.utils.FormConverter;
 import com.ggkttd.kolmakov.testSystem.utils.UserRoles;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.MessageSource;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
 
 import javax.servlet.http.HttpSession;
-import javax.validation.Valid;
 import java.util.List;
+import java.util.Locale;
 
 @Controller
 public class AuthorizationController {
+    @Autowired
+    private MessageSource messageSource;
     @Autowired
     private UserService userService;
     @Autowired
@@ -46,8 +50,8 @@ public class AuthorizationController {
         return "authorization";
     }
 
-    @PostMapping(value = "/signIn")
-    public String resolveMainPage(@RequestBody @Valid User userFromClient, ModelMap modelMap, HttpSession session){
+    @PostMapping(value = "/authorization")
+    public String resolveMainPage(User userFromClient, ModelMap modelMap, HttpSession session,Locale locale){
         User user = userService.checkAuthorization(userFromClient);
         if(user.isAuthorized()){
             session.setAttribute("user",user);
@@ -62,13 +66,17 @@ public class AuthorizationController {
                 return "redirect:/administrator/mainAdministrator";
             }
         }else{
+            modelMap.addAttribute("message",messageSource.getMessage("message.notif.userNotFound",new Object[]{},locale));
             modelMap.addAttribute("error",true);
         }
         return "authorization";
     };
 
-    @PostMapping(value = "/signUp")
-    public String signUp(@Valid User userFromClient,ModelMap modelMap){
+    @Autowired
+    FormConverter formConverter;
+    @PostMapping(value = "/registration")
+    public String signUp(UserForm userForm, ModelMap modelMap, Locale locale){
+        User userFromClient = formConverter.convertUser(userForm);
         List<Group> groups = groupService.getAll();
         modelMap.addAttribute("groups",groups);
         User userFromDb = userService.findByLogin(userFromClient);
@@ -76,8 +84,11 @@ public class AuthorizationController {
         //check if such user exists
         if(userFromDb != null){
             modelMap.addAttribute("error",true);
+            modelMap.addAttribute("message",messageSource.getMessage("message.notif.userExists",new Object[]{},locale));
         }else{
+            userService.save(userFromClient);
             modelMap.addAttribute("success",true);
+            modelMap.addAttribute("message",messageSource.getMessage("message.notif.regSuccess",new Object[]{},locale));
         }
 
         //after registration process show registration form with registration result

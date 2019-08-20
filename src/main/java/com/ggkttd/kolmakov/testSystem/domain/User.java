@@ -32,7 +32,7 @@ public class User {
     private String login;
 
     @NotBlank
-    @Size(max = 50,message = "Invalid user password length")
+    @Size(max = 60,message = "Invalid user password length")
     private String password;
 
     @ManyToOne(cascade = CascadeType.PERSIST)
@@ -43,5 +43,36 @@ public class User {
     @JoinColumn(name = "user_group_id")
     private Group group;
 
+    @Transient
     private boolean isAuthorized;
+
+    public User(
+            @NotBlank @Size(max = 20, message = "Invalid user name length") String name,
+            @NotBlank @Size(max = 20, message = "Invalid user surname length") String surname,
+            @NotBlank @Size(max = 30, message = "Invalid user login length") String login,
+            @NotBlank @Size(max = 50, message = "Invalid user password length") String password,
+            Role role,
+            Group group,
+            boolean isAuthorized) {
+        this.name = name;
+        this.surname = surname;
+        this.login = login;
+        this.password = password;
+        this.role = role;
+        this.group = group;
+        this.isAuthorized = isAuthorized;
+    }
+
+    public User(
+            @NotBlank @Size(max = 20, message = "Invalid user name length") String name,
+            @NotBlank @Size(max = 20, message = "Invalid user surname length") String surname,
+            @NotBlank @Size(max = 30, message = "Invalid user login length") String login,
+            @NotBlank @Size(max = 50, message = "Invalid user password length") String password,
+            Group group) {
+        this.name = name;
+        this.surname = surname;
+        this.login = login;
+        this.password = password;
+        this.group = group;
+    }
 }

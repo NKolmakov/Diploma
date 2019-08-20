@@ -7,6 +7,7 @@ import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 
 @Entity
@@ -20,9 +21,13 @@ public class Role {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @NotBlank
-    @Size(max = 20,message = "Invalid role name length")
+    @NotNull
     @Enumerated(value = EnumType.STRING)
     private UserRoles name;
 
+    public Role(
+            @NotBlank
+            @Size(max = 20, message = "Invalid role name length") UserRoles name) {
+        this.name = name;
+    }
 }

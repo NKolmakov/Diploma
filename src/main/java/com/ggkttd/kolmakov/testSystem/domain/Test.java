@@ -7,6 +7,7 @@ import lombok.NoArgsConstructor;
 import javax.persistence.*;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.Size;
+import java.util.List;
 
 @Entity
 @Table
@@ -29,4 +30,6 @@ public class Test {
     @JoinColumn(name = "subject_id")
     private Subject subject;
 
+    @OneToMany(mappedBy = "test")
+    private List<Question> questions;
 }

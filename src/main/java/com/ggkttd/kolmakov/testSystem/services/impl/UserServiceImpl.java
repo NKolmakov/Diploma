@@ -1,9 +1,11 @@
 package com.ggkttd.kolmakov.testSystem.services.impl;
 
+import com.ggkttd.kolmakov.testSystem.domain.Role;
 import com.ggkttd.kolmakov.testSystem.domain.User;
 import com.ggkttd.kolmakov.testSystem.exceptions.NotFoundException;
 import com.ggkttd.kolmakov.testSystem.repo.UserRepo;
 import com.ggkttd.kolmakov.testSystem.services.UserService;
+import com.ggkttd.kolmakov.testSystem.utils.UserRoles;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -31,6 +33,10 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public User save(User user) {
+        String encodedPassword = encoder.encode(user.getPassword());
+        //todo: MOCK
+        user.setRole(new Role(UserRoles.STUDENT));
+        user.setPassword(encodedPassword);
         return userRepo.save(user);
     }
 

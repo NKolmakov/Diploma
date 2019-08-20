@@ -17,7 +17,7 @@ create table if not exists user(
     name varchar(20) not null,
     surname varchar(20) not null,
     login varchar(30) not null,
-    password varchar(50) not null,
+    password varchar(60) not null,
     role_id bigint unsigned,
     user_group_id bigint unsigned,
 

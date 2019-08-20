@@ -3,7 +3,7 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Authorization</title>
+    <title>Registration</title>
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
     <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" rel="stylesheet"
           integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
@@ -13,11 +13,20 @@
     <!-- header-->
     <div th:insert="fragments/general.html::header"></div>
 
-    <form class="col-lg-6 col-md-6" action="signUp" method="post">
-<!--        <div th:insert="fragments/form.html::registration"></div>-->
-<!--        <div  th:insert="fragments/form.html::authorization"></div>-->
-<!--        <a th:href="@{/authorization}" th:text="#{form.link.signIn}"></a>-->
-        <input hidden name="id" th:value="123">
+    <form class="col-lg-6 col-md-6" action="registration" method="post">
+        <!--messages-->
+        <div>
+            <th:block th:if="${success}">
+                <div th:replace="fragments/notifications.html::notifSuccess"></div>
+            </th:block>
+            <th:block th:if="${error}">
+                <div th:replace="fragments/notifications.html::notifError"></div>
+            </th:block>
+        </div>
+
+        <div th:insert="fragments/form.html::registration"></div>
+        <div  th:insert="fragments/form.html::authorization"></div>
+        <a th:href="@{/authorization}" th:text="#{form.link.signIn}"></a>
         <button class="btn btn-primary" type="submit" th:text="#{form.button.signUp}"></button>
     </form>
 
