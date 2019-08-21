@@ -20,7 +20,7 @@
                 <div th:replace="fragments/notifications.html::notifSuccess"></div>
             </th:block>
             <th:block th:if="${error}">
-                <div th:replace="fragments/notifications.html:notifError"></div>
+                <div th:replace="fragments/notifications.html::notifError"></div>
             </th:block>
         </div>
         <div th:insert="fragments/form.html::authorization"></div>

@@ -16,7 +16,7 @@ public class Application {
 	}
 }
 //-----------------------------------------------------------------
-//todo:HINT: to put object into object use structure: th:name="objects[index].nesteds[index].field"
+//todo: stopped at editing indexes at question.answers.answer.question.answer
 //todo: add error message in error view
 //todo: how to send localized message to view
 //todo: add institution of education to application
