@@ -89,12 +89,18 @@
                     th:value="${subject.id}" th:text="${subject.name}"></option>
         </select>
 
+        <button class="createQuestion" type="button" th:text="#{form.button.createQuestion}"></button>
+        <input hidden id="form.button.addAnswer" th:value="#{form.button.addAnswer}">
+        <input hidden id="form.placeholder.question" th:value="#{form.placeholder.question}">
+        <input hidden id="form.placeholder.answer" th:value="#{form.placeholder.answer}">
+        <input hidden id="form.label.questionNumber" th:value="#{form.label.questionNumber}">
         <div class="questionBlock">
-            <div class="question">
-                <h4 th:text="#{form.label.questionNumber}">1</h4>
-                <textarea th:name="questions[0].name" th:placeholder="#{form.placeholder.question}"></textarea>
-                <div class="answers">
-                    <input id="answer#0" th:name="questions[0].answers[0].name" type="text" th:placeholder="#{form.placeholder.answer}">
+            <div id="question#0" class="question">
+                <h4 th:text="#{form.label.questionNumber}+' 1'"></h4>
+                <textarea th:name="questions[0].name" th:placeholder="#{form.placeholder.question}" maxlength="255" required></textarea>
+                <button id="button#0" class="createAnswer" type="button" th:text="#{form.button.addAnswer}"></button>
+                <div class="answers" id="answers#0">
+                    <input th:name="questions[0].answers[0].name" type="text" th:placeholder="#{form.placeholder.answer}" maxlength="255" required>
                 </div>
             </div>
         </div>
