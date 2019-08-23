@@ -2,10 +2,8 @@ package com.ggkttd.kolmakov.testSystem.controllers;
 
 import com.ggkttd.kolmakov.testSystem.domain.Group;
 import com.ggkttd.kolmakov.testSystem.domain.User;
-import com.ggkttd.kolmakov.testSystem.domain.forms.UserForm;
 import com.ggkttd.kolmakov.testSystem.services.GroupService;
 import com.ggkttd.kolmakov.testSystem.services.UserService;
-import com.ggkttd.kolmakov.testSystem.utils.FormConverter;
 import com.ggkttd.kolmakov.testSystem.utils.UserRoles;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.MessageSource;
@@ -70,13 +68,10 @@ public class AuthorizationController {
             modelMap.addAttribute("error",true);
         }
         return "authorization";
-    };
+    }
 
-    @Autowired
-    FormConverter formConverter;
     @PostMapping(value = "/registration")
-    public String signUp(UserForm userForm, ModelMap modelMap, Locale locale){
-        User userFromClient = formConverter.convertUser(userForm);
+    public String signUp(User userFromClient, ModelMap modelMap, Locale locale){
         List<Group> groups = groupService.getAll();
         modelMap.addAttribute("groups",groups);
         User userFromDb = userService.findByLogin(userFromClient);

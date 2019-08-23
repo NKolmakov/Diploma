@@ -45,7 +45,7 @@ public class TutorController {
 
     @PostMapping(value = "/createTest")
     public String saveTest(Test test,ModelMap modelMap, Locale locale){
-//        testService.save(test);
+        testService.save(test);
         modelMap.addAttribute("success",true);
         modelMap.addAttribute("message",messageSource.getMessage("message.notif.testSaved",new Object[]{},locale));
         return "mainTutor";

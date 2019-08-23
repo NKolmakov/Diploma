@@ -76,41 +76,39 @@
 </div>
 
 <div th:fragment="createTest" class="container-fluid">
-    <div class="row">
-        <form action="createTest" method="post">
-            <label for="testName" th:text="#{form.label.testName}"></label>
-            <input id="testName" class="form-control" name="name" type="text" maxlength="70" required>
+    <form action="createTest" method="post">
+        <label for="testName" th:text="#{form.label.testName}"></label>
+        <input id="testName" class="form-control" name="name" type="text" maxlength="70" required>
 
-            <label for="testDescription" th:text="#{form.label.testDescription}"></label>
-            <textarea id="testDescription" class="form-control" name="description" type="text"
-                      maxlength="255"></textarea>
+        <label for="testDescription" th:text="#{form.label.testDescription}"></label>
+        <textarea id="testDescription" class="form-control" name="description" type="text"
+                  maxlength="255"></textarea>
 
-            <label for="subjects" th:text="#{form.label.selectTest}"></label>
-            <select id="subjects" class="form-control" name="subject">
-                <option th:each="subject: ${subjects}"
-                        th:value="${subject.id}" th:text="${subject.name}"></option>
-            </select>
+        <label for="subjects" th:text="#{form.label.selectTest}"></label>
+        <select id="subjects" class="form-control" name="subject">
+            <option th:each="subject: ${subjects}"
+                    th:value="${subject.id}" th:text="${subject.name}"></option>
+        </select>
 
-            <button class="createQuestion" type="button" th:text="#{form.button.createQuestion}"></button>
-            <input hidden id="form.button.addAnswer" th:value="#{form.button.addAnswer}">
-            <input hidden id="form.placeholder.question" th:value="#{form.placeholder.question}">
-            <input hidden id="form.placeholder.answer" th:value="#{form.placeholder.answer}">
-            <input hidden id="form.label.questionNumber" th:value="#{form.label.questionNumber}">
-            <div class="questionBlock">
-                <div id="question#0" class="question">
-                    <h4 class="questionHeader col-4" th:text="#{form.label.questionNumber}+' 1'"></h4>
-                    <textarea class="questionName" th:name="questions[0].name"
-                              th:placeholder="#{form.placeholder.question}" maxlength="255"
-                              required></textarea>
-                    <button class="createAnswer" type="button" th:text="#{form.button.addAnswer}"></button>
-                    <div id="answer#0" class="answers">
-                        <input th:name="questions[0].answers[0].right" type="checkbox">
-                        <input th:name="questions[0].answers[0].name" type="text"
-                               th:placeholder="#{form.placeholder.answer}" maxlength="255" required><br>
-                    </div>
+        <button class="createQuestion btn btn-success" type="button" th:text="#{form.button.createQuestion}"></button>
+        <input hidden id="form.button.addAnswer" th:value="#{form.button.addAnswer}">
+        <input hidden id="form.placeholder.question" th:value="#{form.placeholder.question}">
+        <input hidden id="form.placeholder.answer" th:value="#{form.placeholder.answer}">
+        <input hidden id="form.label.questionNumber" th:value="#{form.label.questionNumber}">
+        <div class="questionBlock">
+            <div id="question#0" class="question">
+                <h4 class="questionHeader col-4" th:text="#{form.label.questionNumber}+' 1'"></h4>
+                <textarea class="questionName" th:name="questions[0].name"
+                          th:placeholder="#{form.placeholder.question}" maxlength="255"
+                          required></textarea>
+                <button class="createAnswer btn btn-success" type="button" th:text="#{form.button.addAnswer}"></button>
+                <div id="answer#0" class="answers">
+                    <input th:name="questions[0].answers[0].right" type="checkbox">
+                    <input th:name="questions[0].answers[0].name" type="text"
+                           th:placeholder="#{form.placeholder.answer}" maxlength="255" required><br>
                 </div>
             </div>
-            <button class="btn btn-primary" type="submit" th:text="#{form.button.save}"></button>
-        </form>
-    </div>
+        </div>
+        <button class="btn btn-primary" type="submit" th:text="#{form.button.save}"></button>
+    </form>
 </div>
