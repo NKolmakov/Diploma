@@ -20,16 +20,16 @@ public class Test {
     private Long id;
 
     @NotBlank
-    @Size(max = 70,message = "Invalid name length")
+    @Size(max = 70, message = "Invalid name length")
     private String name;
 
-    @Size(max = 255,message = "Invalid test description length")
+    @Size(max = 255, message = "Invalid test description length")
     private String description;
 
-    @ManyToOne
+    @ManyToOne(cascade = CascadeType.PERSIST)
     @JoinColumn(name = "subject_id")
     private Subject subject;
 
-    @OneToMany(mappedBy = "test")
+    @OneToMany(mappedBy = "test", cascade = CascadeType.ALL,fetch = FetchType.EAGER)
     private List<Question> questions;
 }

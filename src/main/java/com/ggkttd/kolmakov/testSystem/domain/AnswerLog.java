@@ -5,8 +5,9 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
+import java.util.List;
 
-@Table
+@Table(name = "answer_log")
 @Entity
 @Data
 @AllArgsConstructor
@@ -16,15 +17,13 @@ public class AnswerLog {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @ManyToOne
+    @ManyToOne(cascade = CascadeType.PERSIST,fetch = FetchType.EAGER)
     @JoinColumn(name = "user_id")
     private User user;
 
-    @ManyToOne
-    @JoinColumn(name = "question_id")
-    private Question question;
+    @OneToMany(mappedBy = "answerLog",cascade = CascadeType.PERSIST,fetch = FetchType.EAGER)
+    private List<Question> questions;
 
-    @ManyToOne
-    @JoinColumn(name = "answer_id")
-    private Answer answer;
+    @Transient
+    private Long testId;
 }

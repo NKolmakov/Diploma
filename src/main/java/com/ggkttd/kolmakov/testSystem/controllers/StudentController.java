@@ -1,14 +1,17 @@
 package com.ggkttd.kolmakov.testSystem.controllers;
 
+import com.ggkttd.kolmakov.testSystem.domain.AnswerLog;
 import com.ggkttd.kolmakov.testSystem.domain.Subject;
 import com.ggkttd.kolmakov.testSystem.domain.Test;
 import com.ggkttd.kolmakov.testSystem.domain.User;
+import com.ggkttd.kolmakov.testSystem.services.AnswerLogService;
 import com.ggkttd.kolmakov.testSystem.services.SubjectService;
 import com.ggkttd.kolmakov.testSystem.services.TestService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 
 import javax.servlet.http.HttpSession;
@@ -21,6 +24,8 @@ public class StudentController {
     private SubjectService subjectService;
     @Autowired
     private TestService testService;
+    @Autowired
+    private AnswerLogService answerLogService;
 
     @GetMapping(value = "/mainStudent")
     public String getHomePage(ModelMap modelMap,HttpSession session){
@@ -49,6 +54,12 @@ public class StudentController {
     public String getTest(Test test, ModelMap modelMap){
         modelMap.addAttribute("test",test);
         modelMap.addAttribute("passTest",true);
+        return "mainStudent";
+    }
+
+    @PostMapping(value = "/passTest")
+    public String saveStudentTest(AnswerLog answerLog,ModelMap modelMap){
+//        answerLogService.save(answerLog);
         return "mainStudent";
     }
 }

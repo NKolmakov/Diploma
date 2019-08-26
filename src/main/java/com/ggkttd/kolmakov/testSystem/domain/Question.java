@@ -15,7 +15,7 @@ import java.util.List;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-@ToString(exclude = "answers")
+@ToString(exclude = "test")
 public class Question {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -25,10 +25,17 @@ public class Question {
     @Size(max = 255,message = "Invalid question name length")
     private String name;
 
-    @ManyToOne
+    @ManyToOne(cascade = CascadeType.PERSIST,fetch = FetchType.EAGER)
     @JoinColumn(name = "test_id")
     private Test test;
 
-    @OneToMany(mappedBy = "question")
+    @OneToMany(mappedBy = "question",cascade = CascadeType.ALL)
     private List<Answer> answers;
+
+    @ManyToOne(cascade = CascadeType.PERSIST)
+    @JoinColumn(name = "question_id")
+    private AnswerLog answerLog;
+
+    @Transient
+    private boolean manyRightAnswers;
 }

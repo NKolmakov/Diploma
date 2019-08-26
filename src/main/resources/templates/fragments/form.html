@@ -41,34 +41,37 @@
 </div>
 
 <div th:fragment="selectTest">
-    <form action="passTest" method="get">
-        <label for="test" th:text="#{form.label.selectTest}"></label>
-        <select id="test" name="test" class="form-control">
-            <option th:each="test: ${tests}" th:value="${test}" th:text="${test.name}"></option>
-        </select>
-        <button class="btn btn-primary" type="submit" th:text="#{form.button.continue}"></button>
-    </form>
+    <label for="test" th:text="#{form.label.selectTest}"></label>
+    <select id="test" name="testId" class="form-control">
+        <option th:each="test: ${tests}" th:value="${test.id}" th:text="${test.name}"></option>
+    </select>
 </div>
 
 <div th:fragment="passTest">
     <form action="passTest" method="post">
+        <input hidden th:field="${test.id}">
 
         <!-- for each question in test -->
-        <div th:each="question :${test.questions}">
-            <h4 th:text="${question.id}"></h4>
+        <div th:each="question,questStat :${test.questions}" th:with="quest=${questStat.index}">
+            <input hidden th:name="questions[__${quest}__].id" th:value="${question.id}">
+            <h4 th:text="${question.name}"></h4>
 
             <!-- if question has many right answers show checkbox -->
             <th:block th:if="${question.manyRightAnswers}">
-                <div th:each="answer: ${question.answers}">
-                    <input th:id="answer#${answer.id}" name="answer" class="form-check-input" type="checkbox">
+                <div th:each="answer,ansStat: ${question.answers}" th:with="ans=${ansStat.index}">
+                    <input hidden th:name="questions[__${quest}__].answers[__${ans}__].id" th:value="${answer.id}">
+                    <input th:name="questions[__${quest}__].answers[__${ans}__].checked" class="form-check-input" type="checkbox">
                     <label th:for="answer#${answer.id}" class="form-check-label" th:text="${answer.name}"></label>
                 </div>
             </th:block>
 
             <!-- if question has only one right answer -->
             <th:block th:if="${!question.manyRightAnswers}">
-                <input th:id="answer#${answer.id}" type="radio" name="answer" th:value="${answer}">
-                <label th:for="answer${answer.id}" th:value="${answer.name}"></label>
+                <div th:each="answer,ansStat: ${question.answers}" th:with="ans=${ansStat.index}">
+                    <input hidden th:name="questions[__${quest}__].answers[__${ans}__].id" th:value="${answer.id}">
+                    <input th:name="questions[__${quest}__].answers[__${ans}__].checked" class="form-check-input" type="radio">
+                    <label th:for="answer#${answer.id}" class="form-check-label" th:text="${answer.name}"></label>
+                </div>
             </th:block>
         </div>
         <button class="btn btn-success" type="submit" th:text="#{form.button.send}"></button>
@@ -112,3 +115,68 @@
         <button class="btn btn-primary" type="submit" th:text="#{form.button.save}"></button>
     </form>
 </div>
+
+<div th:fragment="editTest" class="container-fluid">
+    <form action="editTest" method="post">
+        <input hidden th:field="${test.id}">
+        <label for="testName" th:text="#{form.label.testName}"></label>
+        <input id="testName" class="form-control" th:name="'name'" type="text" maxlength="70" required th:value="${test.name}">
+
+        <label for="testDescription" th:text="#{form.label.testDescription}"></label>
+        <textarea id="testDescription" class="form-control" name="description" type="text"
+                  maxlength="255" th:text="${test.description}"></textarea>
+
+        <label for="subjects" th:text="#{form.label.selectTest}"></label>
+        <select id="subjects" class="form-control" name="subject">
+            <option selected="selected" th:value="${test.subject.id}" th:text="${test.subject.name}"></option>
+            <option th:each="subject: ${subjects}"
+                    th:value="${subject.id}" th:text="${subject.name}"></option>
+        </select>
+
+        <button class="createQuestion btn btn-success" type="button" th:text="#{form.button.createQuestion}"></button>
+        <input hidden id="form.button.addAnswer" th:value="#{form.button.addAnswer}">
+        <input hidden id="form.placeholder.question" th:value="#{form.placeholder.question}">
+        <input hidden id="form.placeholder.answer" th:value="#{form.placeholder.answer}">
+        <input hidden id="form.label.questionNumber" th:value="#{form.label.questionNumber}">
+        <div class="questionBlock">
+            <th:block th:each="question,iStat: ${test.questions}">
+                <div th:id="'question#'+@{${questIndex}}" th:with="questIndex=${iStat.size - iStat.index-1}" class="question">
+                    <input hidden th:name="questions[__@{${questIndex}}__].id" th:value="${question.id}">
+                    <h4 class="questionHeader col-4" th:text="#{form.label.questionNumber}+' '+@{${questIndex+1}}"></h4>
+                    <th:block th:if="@{${questIndex > 0}}">
+                        <button class="removeQuestion" type="button"> - </button>
+                    </th:block>
+                    <textarea class="questionName" th:name="questions[__@{${questIndex}}__].name"
+                              th:placeholder="#{form.placeholder.question}" maxlength="255"
+                              th:text="${test.questions[__@{${questIndex}}__].name}"
+                              required></textarea>
+                    <button class="createAnswer btn btn-success" type="button" th:text="#{form.button.addAnswer}"></button>
+
+                    <th:block th:each="answer,ansStat: ${question.answers}">
+                        <div th:id="'answer#'+${ansStat.index}" class="answers">
+                            <input hidden th:name="questions[__@{${questIndex}}__].answers[__${ansStat.index}__].id" th:value="${answer.id}">
+                            <input th:name="questions[__@{${questIndex}}__].answers[__${ansStat.index}__].right"
+                                   type="checkbox"
+                                   th:checked="${answer.right}">
+                            <input th:name="questions[__@{${questIndex}}__].answers[__${ansStat.index}__].name" type="text"
+                                   th:placeholder="#{form.placeholder.answer}" maxlength="255"
+                                   th:value="${answer.name}" required>
+                            <th:block th:if="${ansStat.index > 0}">
+                                <button class="removeAnswer" type="button"> - </button>
+                            </th:block>
+                        </div>
+                    </th:block>
+                </div>
+            </th:block>
+        </div>
+        <button class="btn btn-primary" type="submit" th:text="#{form.button.save}"></button>
+    </form>
+</div>
+
+<div th:fragment="deleteTest" class="container-fluid">
+    <form action="deleteTest" method="post">
+        <th:block th:replace="fragments/form.html::selectTest"></th:block>
+        <button class="btn btn-success" type="submit" th:text="#{form.button.deleteTest}"></button>
+    </form>
+</div>
+

@@ -17,12 +17,24 @@
     <!--footer-->
 <!--    <div th:insert="fragments/general.html::footer"></div>-->
     <a href="createTest" th:text="#{form.href.createTest}"></a><br>
-    <a href="#" th:text="#{form.href.editTest}"></a><br>
-    <a href="#" th:text="#{form.href.deleteTest}"></a><br>
+    <a href="getTestList" th:text="#{form.href.editTest}"></a><br>
+    <a href="deleteTest" th:text="#{form.href.deleteTest}"></a><br>
 
     <!-- Create test-->
     <th:block th:if="${createTest}">
         <div th:replace="fragments/form.html::createTest"></div>
+    </th:block>
+    <th:block th:if="${selectTest}">
+        <form action="editTest" method="get">
+            <div th:replace="fragments/form.html::selectTest"></div>
+            <button class="btn btn-primary" type="submit" th:text="#{form.button.continue}"></button>
+        </form>
+    </th:block>
+    <th:block th:if="${editTest}">
+        <div th:replace="fragments/form.html::editTest"></div>
+    </th:block>
+    <th:block th:if="${deleteTest}">
+        <div th:replace="fragments/form.html::deleteTest"></div>
     </th:block>
     <!--  Scripts  -->
     <div>

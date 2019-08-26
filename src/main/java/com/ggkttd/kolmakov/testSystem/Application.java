@@ -16,13 +16,7 @@ public class Application {
 	}
 }
 //-----------------------------------------------------------------
-//todo: stopped at editing indexes at question.answers.answer.question.answer
-//todo: add error message in error view
-//todo: how to send localized message to view
-//todo: add institution of education to application
-//todo: figure out if exists inheritance in html classes view
-
-//TODO: STATIC PAGES LIST
+//todo: fix student passing test
 
 //registration
 //authorization

@@ -10,7 +10,6 @@ import org.springframework.context.MessageSource;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 
@@ -43,11 +42,53 @@ public class TutorController {
         return "mainTutor";
     }
 
+    @GetMapping(value = "/getTestList")
+    public String getTestList(ModelMap modelMap){
+        List<Test> tests = testService.findAll();
+        modelMap.addAttribute("selectTest",true);
+        modelMap.addAttribute("tests",tests);
+        return "mainTutor";
+    }
+
+    @GetMapping(value = "/editTest")
+    public String getTest2Edit(Long testId,ModelMap modelMap){
+        Test testFromDb = testService.getOne(testId);
+        List<Subject> subjects = subjectService.getAll();
+        if(subjects.contains(testFromDb.getSubject())){
+            subjects.remove(testFromDb.getSubject());
+        }
+        modelMap.addAttribute("editTest",true);
+        modelMap.addAttribute("test",testFromDb);
+        modelMap.addAttribute("subjects",subjects);
+        return "mainTutor";
+    }
+
+    @GetMapping(value = "/deleteTest")
+    public String getTestList2Delete(ModelMap modelMap){
+        List<Test> tests = testService.findAll();
+        modelMap.addAttribute("deleteTest",true);
+        modelMap.addAttribute("tests",tests);
+        return "mainTutor";
+    }
+
     @PostMapping(value = "/createTest")
     public String saveTest(Test test,ModelMap modelMap, Locale locale){
         testService.save(test);
         modelMap.addAttribute("success",true);
         modelMap.addAttribute("message",messageSource.getMessage("message.notif.testSaved",new Object[]{},locale));
+        return "mainTutor";
+    }
+
+    @PostMapping(value = "/editTest")
+    public String getEditedTest(Test test,ModelMap modelMap){
+        testService.save(test);
+        return "mainTutor";
+    }
+
+    @PostMapping(value = "/deleteTest")
+    public String deleteTest(Long testId,ModelMap modelMap){
+        Test testFromDb = testService.getOne(testId);
+        testService.delete(testFromDb);
         return "mainTutor";
     }
 }

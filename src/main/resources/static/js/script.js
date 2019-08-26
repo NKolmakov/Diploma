@@ -59,9 +59,10 @@ function updateQuestions(questions) {
             answerLength = 0;
         }
 
-        var firstAnswer = $(question).find("div[id^='answer#']")[0];
-        $(firstAnswer)
-            .before($('<div id="answer#' + answerLength + '" class="answers"</div>')
+//        var firstAnswer = $(question).find("div[id^='answer#']")[0];
+//        $(firstAnswer)
+          $((answers)[answerLength -1])
+            .after($('<div id="answer#' + answerLength + '" class="answers"></div>')
                 .append($('<input name="questions[' + questNumber + '].answers[' + answerLength + '].right" type="checkbox">'))
                 .append($('<input name="questions[' + questNumber + '].answers[' + answerLength + '].name" type="text"' +
                     'placeholder="' + answerPlaceholder + '" maxlength="255" required>'))
