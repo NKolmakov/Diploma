@@ -25,12 +25,38 @@ public class TestServiceImpl implements TestService {
 
     @Override
     public Test getOne(Long id) {
-        return testRepo.findById(id).orElseThrow(() -> new NotFoundException("TEST NOT FOUND"));
+        Test test = testRepo.findById(id).orElseThrow(() -> new NotFoundException("TEST NOT FOUND"));
+
+        //check every question to define right answers amount
+        for (Question question:test.getQuestions()){
+            int rightAnsAmount = 0;
+
+            for (Answer answer:question.getAnswers()){
+                if(answer.isRight() && rightAnsAmount < 2){
+                    rightAnsAmount++;
+                }else if(rightAnsAmount == 2){
+                    question.setManyRightAnswers(true);
+                    break;
+                }
+            }
+        }
+
+        return test;
     }
 
     @Override
     public List<Test> getTestsBySubjectName(String name) {
         return testRepo.getTestsBySubjectName(name);
+    }
+
+    @Override
+    public List<Test> getTestsBySubjectId(Long id) {
+        return testRepo.getTestsBySubjectId(id);
+    }
+
+    @Override
+    public List<Test> getNotPassed(Long userId, Long subjectId) {
+        return testRepo.getNotPassedTestsBySubjectId(userId, subjectId);
     }
 
     @Override
@@ -49,8 +75,8 @@ public class TestServiceImpl implements TestService {
             if (question.getTest() == null) {
                 question.setTest(test);
             }
-            for (Answer answer:question.getAnswers()){
-                if(answer.getQuestion() == null){
+            for (Answer answer : question.getAnswers()) {
+                if (answer.getQuestion() == null) {
                     answer.setQuestion(question);
                 }
             }

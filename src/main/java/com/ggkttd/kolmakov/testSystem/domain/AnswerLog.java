@@ -5,7 +5,6 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
-import java.util.List;
 
 @Table(name = "answer_log")
 @Entity
@@ -17,13 +16,37 @@ public class AnswerLog {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @ManyToOne(cascade = CascadeType.PERSIST,fetch = FetchType.EAGER)
-    @JoinColumn(name = "user_id")
-    private User user;
+    @ManyToOne(cascade = CascadeType.PERSIST, fetch = FetchType.EAGER)
+    @JoinColumn(name = "passing_test_id")
+    private PassingTest passingTest;
 
-    @OneToMany(mappedBy = "answerLog",cascade = CascadeType.PERSIST,fetch = FetchType.EAGER)
-    private List<Question> questions;
+    @ManyToOne(cascade = CascadeType.PERSIST)
+    @JoinColumn(name = "question_id")
+    private Question question;
 
-    @Transient
-    private Long testId;
+    @ManyToOne(cascade = CascadeType.PERSIST)
+    @JoinColumn(name = "answer_id")
+    private Answer answer;
+
+    @Column(name = "is_right")
+    private boolean isRight;
+
+
+    public AnswerLog(PassingTest passingTest, Question question) {
+        this.passingTest = passingTest;
+        this.question = question;
+    }
+
+    public AnswerLog(PassingTest passingTest, Question question, Answer answer) {
+        this.passingTest = passingTest;
+        this.question = question;
+        this.answer = answer;
+    }
+
+    public AnswerLog(PassingTest passingTest, Question question, Answer answer, boolean isRight) {
+        this.passingTest = passingTest;
+        this.question = question;
+        this.answer = answer;
+        this.isRight = isRight;
+    }
 }

@@ -12,7 +12,7 @@ import org.springframework.web.servlet.config.annotation.EnableWebMvc;
 public class GlobalExceptionHandler{
     private static final Logger LOGGER = Logger.getLogger(GlobalExceptionHandler.class);
 
-    @ExceptionHandler(value = NotFoundException.class)
+    @ExceptionHandler(value = Throwable.class)
     public ModelAndView getNotFoundMessage(Exception ex){
         LOGGER.warn(ex.getMessage());
         ModelAndView modelAndView = new ModelAndView("customErrorPage");

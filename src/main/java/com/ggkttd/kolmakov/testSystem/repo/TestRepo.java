@@ -13,4 +13,13 @@ public interface TestRepo extends JpaRepository<Test, Long> {
 
     @Query(value = "select * from test t where t.subject_id in (select id from subject s where s.name like :name)", nativeQuery = true)
     List<Test> getTestsBySubjectName(@Param("name") String name);
+
+    @Query(value = "select * from test t where t.subject_id = :id", nativeQuery = true)
+    List<Test> getTestsBySubjectId(@Param("id") Long id);
+
+    //returns list of tests, not passed by this user
+    @Query(value = "select * from test t where " +
+            "t.id not in(select test_id from passing_test p where user_id = :userId) and " +
+            "t.subject_id = :subjectId", nativeQuery = true)
+    List<Test> getNotPassedTestsBySubjectId(@Param("userId") Long userId, @Param("subjectId") Long subjectId);
 }

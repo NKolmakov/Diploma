@@ -1,10 +1,8 @@
 package com.ggkttd.kolmakov.testSystem.controllers;
 
-import com.ggkttd.kolmakov.testSystem.domain.AnswerLog;
-import com.ggkttd.kolmakov.testSystem.domain.Subject;
-import com.ggkttd.kolmakov.testSystem.domain.Test;
-import com.ggkttd.kolmakov.testSystem.domain.User;
+import com.ggkttd.kolmakov.testSystem.domain.*;
 import com.ggkttd.kolmakov.testSystem.services.AnswerLogService;
+import com.ggkttd.kolmakov.testSystem.services.PassingTestService;
 import com.ggkttd.kolmakov.testSystem.services.SubjectService;
 import com.ggkttd.kolmakov.testSystem.services.TestService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -25,7 +23,7 @@ public class StudentController {
     @Autowired
     private TestService testService;
     @Autowired
-    private AnswerLogService answerLogService;
+    private PassingTestService passingTestService;
 
     @GetMapping(value = "/mainStudent")
     public String getHomePage(ModelMap modelMap,HttpSession session){
@@ -43,8 +41,9 @@ public class StudentController {
     }
 
     @GetMapping(value = "/getTests")
-    public String getTests(Subject subject,ModelMap modelMap){
-        List<Test> tests = testService.getTestsBySubjectName(subject.getName());
+    public String getTests(Subject subject,HttpSession session,ModelMap modelMap){
+        User user = (User)session.getAttribute("user");
+        List<Test> tests = testService.getNotPassed(user.getId(),subject.getId());
         modelMap.addAttribute("tests",tests);
         modelMap.addAttribute("showTests",true);
         return "mainStudent";
@@ -52,14 +51,17 @@ public class StudentController {
 
     @GetMapping(value = "/passTest")
     public String getTest(Test test, ModelMap modelMap){
-        modelMap.addAttribute("test",test);
+        Test testFromDb = testService.getOne(test.getId());
+        modelMap.addAttribute("test",testFromDb);
         modelMap.addAttribute("passTest",true);
         return "mainStudent";
     }
 
     @PostMapping(value = "/passTest")
-    public String saveStudentTest(AnswerLog answerLog,ModelMap modelMap){
-//        answerLogService.save(answerLog);
-        return "mainStudent";
+    public String saveStudentTest(PassingTest passingTest,HttpSession session, ModelMap modelMap){
+        User user = (User)session.getAttribute("user");
+        passingTest.setUserId(user.getId());
+        passingTestService.save(passingTest);
+        return "redirect:mainStudent";
     }
 }

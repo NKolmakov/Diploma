@@ -31,10 +31,6 @@ public class Answer {
     @Column(name = "correct")
     private boolean right;
 
-    @ManyToOne(cascade = CascadeType.PERSIST)
-    @JoinColumn(name = "answer_id")
-    private AnswerLog answerLog;
-
     @Transient
     private boolean checked;
 }

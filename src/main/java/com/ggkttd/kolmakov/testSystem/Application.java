@@ -17,6 +17,8 @@ public class Application {
 }
 //-----------------------------------------------------------------
 //todo: fix student passing test
+//todo: set test timer
+//todo: allow tutor save created test as file
 
 //registration
 //authorization
@@ -25,3 +27,7 @@ public class Application {
 //homeStudentPage
 //homeTutorPage
 //homeAdministratorPage
+
+
+//-----------------------------------------------------------------
+

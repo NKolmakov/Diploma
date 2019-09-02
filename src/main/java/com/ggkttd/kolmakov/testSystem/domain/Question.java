@@ -1,5 +1,6 @@
 package com.ggkttd.kolmakov.testSystem.domain;
 
+import com.ggkttd.kolmakov.testSystem.exceptions.NotFoundException;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -32,10 +33,16 @@ public class Question {
     @OneToMany(mappedBy = "question",cascade = CascadeType.ALL)
     private List<Answer> answers;
 
-    @ManyToOne(cascade = CascadeType.PERSIST)
-    @JoinColumn(name = "question_id")
-    private AnswerLog answerLog;
-
     @Transient
     private boolean manyRightAnswers;
+
+    public Answer getById(Long id){
+        for (Answer answer: answers){
+            if(answer.getId().equals(id)){
+                return answer;
+            }
+        }
+
+        throw new NotFoundException("ANSWER #"+id+" NOT FOUND");
+    }
 }

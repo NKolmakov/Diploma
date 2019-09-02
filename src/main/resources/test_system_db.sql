@@ -80,7 +80,7 @@ create table if not exists answer(
 	id bigint unsigned not null auto_increment primary key,
     name varchar(255) not null,
     question_id bigint unsigned,
-	`right` bool,
+	correct bool,
 
     foreign key(question_id) references question(id)
     on update cascade
@@ -89,11 +89,12 @@ create table if not exists answer(
 
 create table if not exists answer_log(
 	id bigint unsigned not null auto_increment primary key,
-    user_id bigint unsigned,
+    passing_test_id bigint unsigned,
     question_id bigint unsigned,
     answer_id bigint unsigned,
+    is_right bool,
 
-	foreign key(user_id) references user(id)
+	foreign key(passing_test_id) references passing_test(id)
     on update cascade
     on delete cascade,
 

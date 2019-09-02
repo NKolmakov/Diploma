@@ -1,4 +1,11 @@
 var questNumber = 0;
+// on window load remove comments
+//$('*').contents().each(function() {
+//     if(this.nodeType === Node.COMMENT_NODE) {
+//       $(this).remove();
+//     }
+//});
+
 var questionPlaceholder = document.getElementById("form.placeholder.question").value;
 var answerPlaceholder = document.getElementById("form.placeholder.answer").value;
 var questionNumber = document.getElementById("form.label.questionNumber").value;
@@ -24,7 +31,7 @@ function createQuestion() {
             .append($('<button class="createAnswer" type="button">' + addAnswer + '</button>'))
             .append($('<div id="answer#0" class="answers"</div>')
                 .append($('<input name="questions[' + questionLength + '].answers[0].right" type="checkbox">'))
-                .append($('<input name="questions[' + questionLength + '].answers[0].right" type="text"' +
+                .append($('<input name="questions[' + questionLength + '].answers[0].name" type="text"' +
                     'placeholder="' + answerPlaceholder + '" maxlength="255" required><br>'))
             )
         );
@@ -59,8 +66,6 @@ function updateQuestions(questions) {
             answerLength = 0;
         }
 
-//        var firstAnswer = $(question).find("div[id^='answer#']")[0];
-//        $(firstAnswer)
           $((answers)[answerLength -1])
             .after($('<div id="answer#' + answerLength + '" class="answers"></div>')
                 .append($('<input name="questions[' + questNumber + '].answers[' + answerLength + '].right" type="checkbox">'))
@@ -125,3 +130,4 @@ function updateQuestions(questions) {
             removeQuestion($(this).closest(".question")[0]);
         })
     });
+
