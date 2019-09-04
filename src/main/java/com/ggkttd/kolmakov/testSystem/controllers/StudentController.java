@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.SessionAttribute;
 
 import javax.servlet.http.HttpSession;
+import java.sql.Date;
 import java.sql.Time;
 import java.util.List;
 
@@ -71,10 +72,7 @@ public class StudentController {
     }
 
     @PostMapping(value = "/passTest")
-    public String saveStudentTest(@SessionAttribute("user") User user,
-                                  Time startTime, Time endTime,
-                                  PassingTest passingTest, ModelMap modelMap) {
-//        passingTest.setUserId(user.getId());
+    public String saveStudentTest(@SessionAttribute("user") User user, PassingTest passingTest, ModelMap modelMap) {
         passingTest.setUser(user);
         PassingTest savedPassingTest = passingTestService.save(passingTest);
         List<Question> questions = passingTestService.getCheckedQuestions(savedPassingTest);

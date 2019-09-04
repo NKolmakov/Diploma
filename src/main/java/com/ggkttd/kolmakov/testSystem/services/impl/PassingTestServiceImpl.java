@@ -6,14 +6,17 @@ import com.ggkttd.kolmakov.testSystem.repo.AnswerLogRepo;
 import com.ggkttd.kolmakov.testSystem.repo.PassingTestRepo;
 import com.ggkttd.kolmakov.testSystem.repo.TestRepo;
 import com.ggkttd.kolmakov.testSystem.services.PassingTestService;
-import com.ggkttd.kolmakov.testSystem.services.QuestionService;
 import com.ggkttd.kolmakov.testSystem.utils.TestUtils;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
+import java.text.DateFormat;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.Collections;
+import java.util.Date;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -47,6 +50,16 @@ public class PassingTestServiceImpl implements PassingTestService {
         List<AnswerLog> logs = passingTest2Save.getLogs();
         //get existing test from db to save current passingTest
         passingTest2Save.setTest(testRepo.getOne(passingTest.getTest().getId()));
+
+        try {
+            DateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy");
+            String currentDate = dateFormat.format(new Date());
+            Date date = dateFormat.parse(currentDate);
+            passingTest2Save.setDate(date);
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
+
         PassingTest savedPassingTest = passingTestRepo.save(passingTest2Save);
         //logs have to be saved after passing test
         answerLogRepo.saveAll(logs);
@@ -61,7 +74,7 @@ public class PassingTestServiceImpl implements PassingTestService {
     @Override
     public List<Question> getCheckedQuestions(PassingTest passingTestFromDb) {
         List<AnswerLog> logs = answerLogRepo.getLogsByPassingTestId(passingTestFromDb.getId());
-        List<Question> questions = testUtils.getResultFromUserAnswers(passingTestFromDb.getTest(),logs);
+        List<Question> questions = testUtils.getResultFromUserAnswers(passingTestFromDb.getTest(), logs);
         return questions;
     }
 
@@ -88,7 +101,6 @@ public class PassingTestServiceImpl implements PassingTestService {
                 boolean allFalse = !answer.isRight() && !answer2Compare.isChecked();
 
                 if (allTrue || allFalse) {
-                    LOGGER.debug("allTrue: " + allTrue + " allFalse: " + allFalse);
                     logs.add(new AnswerLog(passingTest, question, answer, true));
                 } else {
                     logs.add(new AnswerLog(passingTest, question, answer, false));

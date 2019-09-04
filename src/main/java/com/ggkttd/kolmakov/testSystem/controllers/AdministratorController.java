@@ -12,9 +12,9 @@ import javax.servlet.http.HttpSession;
 @RequestMapping(value = "/administrator")
 public class AdministratorController {
     @GetMapping(value = "/home")
-    public String getHomePage(ModelMap modelMap, HttpSession session){
-        User user = (User)session.getAttribute("user");
-        modelMap.addAttribute("user",user);
+    public String getHomePage(ModelMap modelMap, HttpSession session) {
+        User user = (User) session.getAttribute("user");
+        modelMap.addAttribute("user", user);
         return "adminHome";
     }
 }

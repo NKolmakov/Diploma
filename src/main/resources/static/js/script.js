@@ -21,16 +21,16 @@ $(function(){
     })
 });
 
+$(function(){
+    $("#passTest").ready(function(){
+        var startTime = getCurrentTime();
+        $("#passTest").append("<input hidden id='startTime' name='startTime' value='"+startTime+"'>");
+    })
+});
 //timer function starts when available element with class='timer'
     var initialTime = $('#initTime').val();
     var endOfTime = new Date().getTime() + parseInt(initialTime*60*1000);
-
     if(initialTime != null){
-        var dt = new Date();
-        var startTime = dt.getHours()+":"+dt.getMinutes()+":"+dt.getSeconds();
-        $(function(){
-            sessionStorage.setItem("startTime",startTime);
-        });
         var timing = setInterval(function () {
 
             var currentDate = new Date().getTime();
@@ -45,24 +45,41 @@ $(function(){
 
             var time = "";
 
-            if(hours != "00") time+=hours+"h "
-            if(minutes != "00") time+=minutes+"m "
+            if(hours !== "00") time+=hours+"h "
+            if(minutes !== "00") time+=minutes+"m "
             document.getElementById("time").innerHTML = time + seconds + "s";
 
             if (timeLeft <= 0) {
-              var endTime = dt.getHours()+":"+dt.getMinutes()+":"+dt.getSeconds();
+              var dt = new Date();
+              var endTime = getCurrentTime();
               clearInterval(timing);
               alert("Time is over. Test will be send automatically");
-              $("#passTest").append('<input hidden name="startTime" value="'+startTime+'">');
               $("#passTest").append('<input hidden name="endTime" value="'+endTime+'">');
               $('#passTest').submit();
             }
         }, 1000);
     }
 
-    $(function(){
-        $("#passingTest").on("submit",{'startTime':startTime})
+function getCurrentTime(){
+    var dt = new Date();
+    var hours = dt.getHours();
+    var minutes = dt.getMinutes();
+    var seconds = dt.getSeconds();
+
+    if(hours<10) hours = "0"+hours;
+    if(minutes<10) minutes = "0"+minutes;
+    if(seconds<10) seconds = "0"+seconds;
+
+    var result = hours+":"+minutes+":"+seconds;
+    return result;
+}
+
+$(function(){
+    $("#passTest").submit(function(event){
+        var endTime = getCurrentTime();
+        $("#passTest").append('<input hidden name="endTime" value="'+endTime+'">');
     });
+});
 
 /*$(window).load(function(){
     var timer = $('.timer');
@@ -75,10 +92,28 @@ $(function(){
         timer.innerHTML = 
     }
 });*/
-var questionPlaceholder = document.getElementById("form.placeholder.question").value;
-var answerPlaceholder = document.getElementById("form.placeholder.answer").value;
-var questionNumber = document.getElementById("form.label.questionNumber").value;
-var addAnswer = document.getElementById("form.button.addAnswer").value;
+//var questionPlaceholder = document.getElementById("form.placeholder.question").value;
+//var answerPlaceholder = document.getElementById("form.placeholder.answer").value;
+//var questionNumber = document.getElementById("form.label.questionNumber").value;
+//var addAnswer = document.getElementById("form.button.addAnswer").value;
+
+var questionPlaceholder = getLocalizedCaption("form.placeholder.question",questionPlaceholder);
+var answerPlaceholder = getLocalizedCaption("form.placeholder.answer");
+var questionNumber = getLocalizedCaption("form.label.questionNumber");
+var addAnswer = getLocalizedCaption("form.button.addAnswer");
+
+function getLocalizedCaption(property){
+    $.ajax({
+        type:"GET",
+        url:"/getProperty?property="+property,
+        data:property,
+        dataType:"text",
+        contentType:'text; charset=utf-8',
+        success:function(result){
+            return result;
+        }
+    });
+}
 
 function createQuestion() {
     var parentObject = $(".questionBlock")[0];

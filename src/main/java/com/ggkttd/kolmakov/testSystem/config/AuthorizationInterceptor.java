@@ -21,6 +21,7 @@ public class AuthorizationInterceptor implements HandlerInterceptor {
                 return true;
             if (user.getRole().getName() == UserRoles.ADMINISTRATOR && url.matches(".*administrator/.*"))
                 return true;
+            return true;
         }
         response.sendRedirect("/authorization");
         return false;
