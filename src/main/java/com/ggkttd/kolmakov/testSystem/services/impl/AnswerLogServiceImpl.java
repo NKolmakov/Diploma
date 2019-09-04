@@ -24,4 +24,9 @@ public class AnswerLogServiceImpl implements AnswerLogService {
     public List<AnswerLog> saveAll(List<AnswerLog> answerLogs) {
         return answerLogRepo.saveAll(answerLogs);
     }
+
+    @Override
+    public List<AnswerLog> getByPassingTestId(Long id) {
+        return answerLogRepo.getLogsByPassingTestId(id);
+    }
 }

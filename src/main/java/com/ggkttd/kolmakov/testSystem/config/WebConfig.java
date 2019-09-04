@@ -48,16 +48,16 @@ public class WebConfig implements WebMvcConfigurer{
     public void addInterceptors(InterceptorRegistry registry) {
         registry.addInterceptor(localeChangeInterceptor());
 
-//        registry.addInterceptor(new AuthorizationInterceptor())
-//                .addPathPatterns("/tutor/*")
-//                .addPathPatterns("/administrator/*")
-//                .addPathPatterns("/student/*")
-//
-//                .excludePathPatterns("/templates/**")
-//                .excludePathPatterns("/css/**")
-//                .excludePathPatterns("/img/**")
-//                .excludePathPatterns("/locales/**")
-//                .excludePathPatterns("/static/**");
+        registry.addInterceptor(new AuthorizationInterceptor())
+                .addPathPatterns("/tutor/*")
+                .addPathPatterns("/administrator/*")
+                .addPathPatterns("/student/*")
+
+                .excludePathPatterns("/templates/**")
+                .excludePathPatterns("/css/**")
+                .excludePathPatterns("/img/**")
+                .excludePathPatterns("/locales/**")
+                .excludePathPatterns("/static/**");
 
     }
 }

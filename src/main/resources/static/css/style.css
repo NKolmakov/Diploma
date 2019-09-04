@@ -10,3 +10,21 @@ navbar-nav li{
 .nav-link {
     font-size: 1.1 em !important
 }
+
+.question{
+
+}
+
+.answer{
+
+}
+
+.rightQuestion{
+    .question;
+    background-color:green;
+}
+
+.wrongQuestion{
+    .question;
+    background-color:red;
+}

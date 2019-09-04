@@ -6,6 +6,9 @@ import com.ggkttd.kolmakov.testSystem.repo.AnswerLogRepo;
 import com.ggkttd.kolmakov.testSystem.repo.PassingTestRepo;
 import com.ggkttd.kolmakov.testSystem.repo.TestRepo;
 import com.ggkttd.kolmakov.testSystem.services.PassingTestService;
+import com.ggkttd.kolmakov.testSystem.services.QuestionService;
+import com.ggkttd.kolmakov.testSystem.utils.TestUtils;
+import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -17,12 +20,15 @@ import java.util.List;
 @Service
 @Transactional
 public class PassingTestServiceImpl implements PassingTestService {
+    private static final Logger LOGGER = Logger.getLogger(PassingTestServiceImpl.class);
     @Autowired
     private PassingTestRepo passingTestRepo;
     @Autowired
     private AnswerLogRepo answerLogRepo;
     @Autowired
     private TestRepo testRepo;
+    @Autowired
+    private TestUtils testUtils;
 
     @Override
     public List<PassingTest> getAll() {
@@ -37,10 +43,12 @@ public class PassingTestServiceImpl implements PassingTestService {
     @Override
     public PassingTest save(PassingTest passingTest) {
         //check user test
-        PassingTest passingTest2Save = checkTestAllRightMode(passingTest);
+        PassingTest passingTest2Save = getUserTestResult(passingTest);
         List<AnswerLog> logs = passingTest2Save.getLogs();
+        //get existing test from db to save current passingTest
         passingTest2Save.setTest(testRepo.getOne(passingTest.getTest().getId()));
         PassingTest savedPassingTest = passingTestRepo.save(passingTest2Save);
+        //logs have to be saved after passing test
         answerLogRepo.saveAll(logs);
         return savedPassingTest;
     }
@@ -50,6 +58,47 @@ public class PassingTestServiceImpl implements PassingTestService {
         passingTestRepo.delete(passingTest);
     }
 
+    @Override
+    public List<Question> getCheckedQuestions(PassingTest passingTestFromDb) {
+        List<AnswerLog> logs = answerLogRepo.getLogsByPassingTestId(passingTestFromDb.getId());
+        List<Question> questions = testUtils.getResultFromUserAnswers(passingTestFromDb.getTest(),logs);
+        return questions;
+    }
+
+    private List<AnswerLog> getLogsFromUserTest(PassingTest passingTest) {
+        Test testFromDb = testRepo.getOne(passingTest.getTest().getId());
+        List<Question> questionsFromDb = testFromDb.getQuestions();
+        List<Question> questionsFromUserTest = passingTest.getTest().getQuestions();
+        List<AnswerLog> logs = new LinkedList<>();
+
+        Collections.sort(questionsFromDb, (o1, o2) -> Math.toIntExact(o1.getId() - o2.getId()));
+        Collections.sort(questionsFromUserTest, (o1, o2) -> Math.toIntExact(o1.getId() - o2.getId()));
+
+        for (Question question : questionsFromDb) {
+            List<Answer> answers = question.getAnswers();
+            Collections.sort(answers, (o1, o2) -> Math.toIntExact(o1.getId() - o2.getId()));
+
+            Question question2Compare = testUtils.getQuestionById(questionsFromUserTest, question.getId());
+            List<Answer> userAnswers = question2Compare.getAnswers();
+            Collections.sort(userAnswers, (o1, o2) -> Math.toIntExact(o1.getId() - o2.getId()));
+
+            for (Answer answer : answers) {
+                Answer answer2Compare = testUtils.getAnswerById(userAnswers, answer.getId());
+                boolean allTrue = answer.isRight() && answer2Compare.isChecked();
+                boolean allFalse = !answer.isRight() && !answer2Compare.isChecked();
+
+                if (allTrue || allFalse) {
+                    LOGGER.debug("allTrue: " + allTrue + " allFalse: " + allFalse);
+                    logs.add(new AnswerLog(passingTest, question, answer, true));
+                } else {
+                    logs.add(new AnswerLog(passingTest, question, answer, false));
+                }
+            }
+        }
+
+        return logs;
+    }
+
     /**
      * Method check user test by logs, which contains all information about user answers.
      * Current mode assume, that only all right answers have to be checked.
@@ -57,13 +106,13 @@ public class PassingTestServiceImpl implements PassingTestService {
      * @param passingTest - test to be checked
      * @return filled entity <i>passingTest</i> with all user test info including data, time answers info
      */
-    private PassingTest checkTestAllRightMode(PassingTest passingTest) {
+    private PassingTest getUserTestResult(PassingTest passingTest) {
         List<AnswerLog> logs = getLogsFromUserTest(passingTest);
         int rightQuestions = 0;
         int falseQuestions = 0;
         for (Question question : passingTest.getTest().getQuestions()) {
             boolean allRight = true;
-            List<AnswerLog> currentQuestionLogs = getLogsByQuestion(logs, question);
+            List<AnswerLog> currentQuestionLogs = testUtils.getLogsByQuestion(logs, question);
 
             for (AnswerLog answerLog : currentQuestionLogs) {
                 if (!answerLog.isRight()) {
@@ -84,81 +133,6 @@ public class PassingTestServiceImpl implements PassingTestService {
         passingTest.setLogs(logs);
 
         return passingTest;
-    }
-
-    /**
-     * Method compare user answers with original database answers to identify correct and uncorrected answers.
-     *
-     * @param passingTest - contains test from client
-     * @return list of logs contains result of comparison with database test
-     */
-    private List<AnswerLog> getLogsFromUserTest(PassingTest passingTest) {
-        Test testFromDb = testRepo.getOne(passingTest.getTest().getId());
-        List<Question> questionsFromDb = testFromDb.getQuestions();
-        List<Question> questionsFromUserTest = passingTest.getTest().getQuestions();
-        List<AnswerLog> logs = new LinkedList<>();
-
-        Collections.sort(questionsFromDb, (o1, o2) -> Math.toIntExact(o1.getId() - o2.getId()));
-        Collections.sort(questionsFromUserTest, (o1, o2) -> Math.toIntExact(o1.getId() - o2.getId()));
-
-        for (Question question : questionsFromDb) {
-            List<Answer> answers = question.getAnswers();
-            Collections.sort(answers, (o1, o2) -> Math.toIntExact(o1.getId() - o2.getId()));
-
-            Question question2Compare = getQuestionById(questionsFromUserTest, question.getId());
-            List<Answer> userAnswers = question2Compare.getAnswers();
-            Collections.sort(userAnswers, (o1, o2) -> Math.toIntExact(o1.getId() - o2.getId()));
-
-            for (Answer answer : answers) {
-                Answer answer2Compare = getAnswerById(userAnswers, answer.getId());
-                if (answer.isRight() && answer2Compare.isChecked() || !answer.isRight() && !answer.isChecked()) {
-//                if (!answer.isRight() && answer2Compare.isChecked()) {
-                    logs.add(new AnswerLog(passingTest, question, answer, true));
-                } else {
-                    logs.add(new AnswerLog(passingTest, question, answer, false));
-                }
-            }
-        }
-
-        return logs;
-    }
-
-    /**
-     * Method to get all logs which contains info about current question
-     *
-     * @param logs     - all test logs, contains info about all questions
-     * @param question - required question
-     * @return - logs with required question info, or empty list if logs not found
-     */
-    private List<AnswerLog> getLogsByQuestion(List<AnswerLog> logs, Question question) {
-        Collections.sort(logs, (o1, o2) -> Math.toIntExact(o1.getQuestion().getId() - o2.getQuestion().getId()));
-        List<AnswerLog> logList = new LinkedList<>();
-        for (AnswerLog answerLog : logs) {
-            if (answerLog.getQuestion().getId().equals(question.getId())) {
-                logList.add(answerLog);
-            }
-        }
-        return logList;
-    }
-
-    private Question getQuestionById(List<Question> questions, Long id) {
-        for (Question question : questions) {
-            if (question.getId().equals(id)) {
-                return question;
-            }
-        }
-
-        throw new NotFoundException("QUESTION #" + id + " NOT FOUND");
-    }
-
-    private Answer getAnswerById(List<Answer> answers, Long id) {
-        for (Answer answer : answers) {
-            if (answer.getId().equals(id)) {
-                return answer;
-            }
-        }
-
-        throw new NotFoundException("ANSWER #" + id + " NOT FOUND");
     }
 
 }

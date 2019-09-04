@@ -1,11 +1,80 @@
 var questNumber = 0;
 // on window load remove comments
-//$('*').contents().each(function() {
-//     if(this.nodeType === Node.COMMENT_NODE) {
-//       $(this).remove();
-//     }
-//});
+$('*').contents().each(function() {
+     if(this.nodeType === Node.COMMENT_NODE) {
+       $(this).remove();
+     }
+});
 
+//radios on form have different names but referred to one group
+//for this purpose if radio clicked on one answer then turn off others in current question
+$(function(){
+    $(".question").on("click","input:radio",function(){
+        var currentQuestion = $(this).closest(".question")[0];
+        var currentRadio = $(this);
+        var radios = $(currentQuestion).find("input:radio");
+        
+        for(var i = 0; i < radios.length; i++){
+            $(radios[i]).not(currentRadio).prop('checked', false);
+        }
+
+    })
+});
+
+//timer function starts when available element with class='timer'
+    var initialTime = $('#initTime').val();
+    var endOfTime = new Date().getTime() + parseInt(initialTime*60*1000);
+
+    if(initialTime != null){
+        var dt = new Date();
+        var startTime = dt.getHours()+":"+dt.getMinutes()+":"+dt.getSeconds();
+        $(function(){
+            sessionStorage.setItem("startTime",startTime);
+        });
+        var timing = setInterval(function () {
+
+            var currentDate = new Date().getTime();
+            var timeLeft = endOfTime - currentDate;
+
+            var hours = Math.floor((timeLeft % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+            if (hours < 10) hours="0"+hours;
+            var minutes = Math.floor((timeLeft % (1000 * 60 * 60)) / (1000 * 60));
+            if (minutes < 10) minutes="0"+minutes;
+            var seconds = Math.floor((timeLeft % (1000 * 60)) / 1000);
+            if (seconds < 10) seconds="0"+seconds;
+
+            var time = "";
+
+            if(hours != "00") time+=hours+"h "
+            if(minutes != "00") time+=minutes+"m "
+            document.getElementById("time").innerHTML = time + seconds + "s";
+
+            if (timeLeft <= 0) {
+              var endTime = dt.getHours()+":"+dt.getMinutes()+":"+dt.getSeconds();
+              clearInterval(timing);
+              alert("Time is over. Test will be send automatically");
+              $("#passTest").append('<input hidden name="startTime" value="'+startTime+'">');
+              $("#passTest").append('<input hidden name="endTime" value="'+endTime+'">');
+              $('#passTest').submit();
+            }
+        }, 1000);
+    }
+
+    $(function(){
+        $("#passingTest").on("submit",{'startTime':startTime})
+    });
+
+/*$(window).load(function(){
+    var timer = $('.timer');
+
+    if(timer != null){
+        var minutes = $($(timer).find(":header[id*='time']")[0]).val();
+        var hours = minutes / 60;
+        minutes = minutes % 60;        
+        var seconds = 00;
+        timer.innerHTML = 
+    }
+});*/
 var questionPlaceholder = document.getElementById("form.placeholder.question").value;
 var answerPlaceholder = document.getElementById("form.placeholder.answer").value;
 var questionNumber = document.getElementById("form.label.questionNumber").value;
@@ -91,18 +160,42 @@ function updateQuestions(questions) {
                 var answerNum = answers.length - i - 1;
                 var currentQuestionNumber = $($(answers[i]).closest(".question")[0]).attr('id').replace("question#","");
                 var inputCheckBox = $(answers[i]).find("input:checkbox")[0];
-                var inputText = $(answers[i]).find("input:text")[0];
-                var newInputText = $(inputText).clone()[0];
+                var inputs = $(answers[i]).find("input:text");
                 var newCheckbox = $(inputCheckBox).clone()[0];
                 answers[i].id = "answer#" + answerNum;
 
                 newCheckbox.setAttribute('name','questions[' + currentQuestionNumber + '].answers[' + answerNum + '].right');
                 newCheckbox.setAttribute('value',$(inputCheckBox).val());
+
+                var newInputText;
+                var answerId;
+                var newAnswerId;
+                
+                //answer has id if input text length > 1
+                if(inputs.length > 1){
+                    var answerId = inputs[0];
+                    var inputText = inputs[1];
+                    var newAnswerId = $(answerId).clone()[0];
+                    var newInputText = $(inputText).clone()[0];
+
+                }else{                    
+                    var inputText = inputs[0];                    
+                    var newInputText = $(inputText).clone()[0];
+                }
+
+                if(answerId != null){
+                    newAnswerId.setAttribute('name','questions['+currentQuestionNumber+'].answers['+answerNum+'].id');
+                    newAnswerId.setAttribute('value',$(answerId).val());
+
+                    answerId.parentNode.replaceChild(newAnswerId,answerId);
+                }
+                
                 newInputText.setAttribute('name', 'questions[' + currentQuestionNumber + '].answers[' + answerNum + '].name');
                 newInputText.setAttribute('value', $(inputText).val());
-
+                
                 inputCheckBox.parentNode.replaceChild(newCheckbox, inputCheckBox);
-                inputText.parentNode.replaceChild(newInputText, inputText);
+                inputText.parentNode.replaceChild(newInputText,inputText);
+                
             }
         }
     }

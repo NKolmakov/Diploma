@@ -24,15 +24,23 @@
         <div th:replace="fragments/form.html::selectSubject"></div>
     </th:block>
     <th:block th:if="${showTests}">
-        <form action="passTest" method="get">
+        <form action="confirmTest" method="get">
             <div th:replace="fragments/form.html::selectTest"></div>
             <button class="btn btn-primary" type="submit" th:text="#{form.button.continue}"></button>
+        </form>
+    </th:block>
+    <th:block th:if="${getTestInfo}">
+        <form action="passTest" method="get" th:object="${test}">
+            <div th:replace="fragments/form.html::testInfo"></div>
+            <button class="btn btn-success" type="submit" th:text="#{form.button.continue}"></button>
         </form>
     </th:block>
     <th:block th:if="${passTest}">
         <div th:replace="fragments/form.html::passTest"></div>
     </th:block>
-
+    <th:block th:if="${showTestResult}">
+        <div th:replace="fragments/form.html::testResult"></div>
+    </th:block>
     <!--footer-->
     <!--    <div th:insert="fragments/general.html::footer"></div>-->
     <!--  Scripts  -->

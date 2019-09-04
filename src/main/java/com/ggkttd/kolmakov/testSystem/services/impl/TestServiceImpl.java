@@ -10,6 +10,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
+import java.util.Collections;
 import java.util.List;
 
 @Service
@@ -32,15 +33,23 @@ public class TestServiceImpl implements TestService {
             int rightAnsAmount = 0;
 
             for (Answer answer:question.getAnswers()){
-                if(answer.isRight() && rightAnsAmount < 2){
+                if(answer.isRight()){
                     rightAnsAmount++;
-                }else if(rightAnsAmount == 2){
-                    question.setManyRightAnswers(true);
-                    break;
+                    if(rightAnsAmount == 2){
+                        question.setManyRightAnswers(true);
+                        break;
+                    }
                 }
             }
         }
 
+        return test;
+    }
+
+    @Override
+    public Test sortQuestionsByDesc(Test test) {
+        List<Question> questions = test.getQuestions();
+        Collections.sort(test.getQuestions(),(o1, o2) -> Math.toIntExact((o1.getId()-o2.getId())*-1));
         return test;
     }
 

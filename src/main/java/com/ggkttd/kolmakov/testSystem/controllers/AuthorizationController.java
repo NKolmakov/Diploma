@@ -26,64 +26,64 @@ public class AuthorizationController {
     private GroupService groupService;
 
     @GetMapping(value = "/")
-    public String getIndexPage(){
+    public String getIndexPage() {
         return "authorization";
     }
 
     @GetMapping(value = "/authorization")
-    public String getAuthorizationForm(){
+    public String getAuthorizationForm() {
         return "authorization";
     }
 
     @GetMapping(value = "/registration")
-    public String getRegistrationForm(ModelMap modelMap){
+    public String getRegistrationForm(ModelMap modelMap) {
         List<Group> groups = groupService.getAll();
-        modelMap.addAttribute("groups",groups);
+        modelMap.addAttribute("groups", groups);
         return "registration";
     }
 
     @GetMapping(value = "/exit")
-    public String exit(HttpSession session){
+    public String exit(HttpSession session) {
         session.removeAttribute("user");
         return "authorization";
     }
 
     @PostMapping(value = "/authorization")
-    public String resolveMainPage(User userFromClient, ModelMap modelMap, HttpSession session,Locale locale){
+    public String resolveMainPage(User userFromClient, ModelMap modelMap, HttpSession session, Locale locale) {
         User user = userService.checkAuthorization(userFromClient);
-        if(user.isAuthorized()){
-            session.setAttribute("user",user);
+        if (user.isAuthorized()) {
+            session.setAttribute("user", user);
             UserRoles role = user.getRole().getName();
-            if(role == UserRoles.STUDENT){
+            if (role == UserRoles.STUDENT) {
                 return "redirect:/student/mainStudent";
             }
-            if(role == UserRoles.TUTOR){
+            if (role == UserRoles.TUTOR) {
                 return "redirect:/tutor/mainTutor";
             }
-            if(role == UserRoles.ADMINISTRATOR){
+            if (role == UserRoles.ADMINISTRATOR) {
                 return "redirect:/administrator/mainAdministrator";
             }
-        }else{
-            modelMap.addAttribute("message",messageSource.getMessage("message.notif.userNotFound",new Object[]{},locale));
-            modelMap.addAttribute("error",true);
+        } else {
+            modelMap.addAttribute("message", messageSource.getMessage("message.notif.userNotFound", new Object[]{}, locale));
+            modelMap.addAttribute("error", true);
         }
         return "authorization";
     }
 
     @PostMapping(value = "/registration")
-    public String signUp(User userFromClient, ModelMap modelMap, Locale locale){
+    public String signUp(User userFromClient, ModelMap modelMap, Locale locale) {
         List<Group> groups = groupService.getAll();
-        modelMap.addAttribute("groups",groups);
+        modelMap.addAttribute("groups", groups);
         User userFromDb = userService.findByLogin(userFromClient);
 
         //check if such user exists
-        if(userFromDb != null){
-            modelMap.addAttribute("error",true);
-            modelMap.addAttribute("message",messageSource.getMessage("message.notif.userExists",new Object[]{},locale));
-        }else{
+        if (userFromDb != null) {
+            modelMap.addAttribute("error", true);
+            modelMap.addAttribute("message", messageSource.getMessage("message.notif.userExists", new Object[]{}, locale));
+        } else {
             userService.save(userFromClient);
-            modelMap.addAttribute("success",true);
-            modelMap.addAttribute("message",messageSource.getMessage("message.notif.regSuccess",new Object[]{},locale));
+            modelMap.addAttribute("success", true);
+            modelMap.addAttribute("message", messageSource.getMessage("message.notif.regSuccess", new Object[]{}, locale));
         }
 
         //after registration process show registration form with registration result

@@ -36,6 +36,9 @@ public class Question {
     @Transient
     private boolean manyRightAnswers;
 
+    @Transient
+    private boolean answeredRight;
+
     public Answer getById(Long id){
         for (Answer answer: answers){
             if(answer.getId().equals(id)){

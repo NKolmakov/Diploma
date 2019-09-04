@@ -24,8 +24,8 @@
     </div>
     <div class="form-group">
         <label for="group" th:text="#{form.label.group}"></label>
-        <select id="group" name="group" class="form-control" th:each="group: ${groups}">
-            <option th:value="${group}" th:text="${group.name}"></option>
+        <select id="group" th:name="group" class="form-control">
+            <option th:each="group: ${groups}" th:value="${group.id}" th:text="${group.name}"></option>
         </select>
     </div>
 </div>
@@ -47,9 +47,22 @@
     </select>
 </div>
 
+<div th:fragment="testInfo">
+    <input hidden th:name="test" th:value="${test.id}">
+    <p th:text="#{form.text.testName}+':'+${test.name}"></p>
+    <p th:text="#{form.text.questionsAmount}+':'+${amount}"></p>
+    <p th:text="#{form.text.allottedTime}+':'+${test.allottedTime}"></p>
+</div>
+
 <div th:fragment="passTest" class="container-fluid">
-    <form action="passTest" method="post" th:object="${passingTest}">
+    <form id="passTest" action="passTest" method="post" th:object="${passingTest}">
         <input hidden name="test.id" th:value="${test.id}">
+        <input hidden id="initTime" th:value="${test.allottedTime}">
+        <h1 th:text="${test.name}"></h1>
+
+        <div class="timer row justify-content-center border rounded-pill">
+            <h3 id="time"></h3>
+        </div>
 
         <div th:each="question,questStat :${test.questions}" th:with="quest=${questStat.index}">
             <div th:id="'question#'+@{${quest}}" class="question">
@@ -89,6 +102,7 @@
 
 <div th:fragment="createTest" class="container-fluid">
     <form action="createTest" method="post">
+
         <label for="testName" th:text="#{form.label.testName}"></label>
         <input id="testName" class="form-control" name="name" type="text" maxlength="70" required>
 
@@ -96,11 +110,14 @@
         <textarea id="testDescription" class="form-control" name="description" type="text"
                   maxlength="255"></textarea>
 
-        <label for="subjects" th:text="#{form.label.selectTest}"></label>
+        <label for="subjects" th:text="#{form.label.selectSubject}"></label>
         <select id="subjects" class="form-control" name="subject">
             <option th:each="subject: ${subjects}"
                     th:value="${subject.id}" th:text="${subject.name}"></option>
         </select>
+
+        <label for="testTime" th:text="#{form.text.allottedTime}"></label>
+        <input id="testTime" class="form-control col-1" name="allottedTime" type="number" min="0" max="255" required>
 
         <button class="createQuestion btn btn-success" type="button" th:text="#{form.button.createQuestion}"></button>
         <input hidden id="form.button.addAnswer" th:value="#{form.button.addAnswer}">
@@ -143,35 +160,38 @@
                     th:value="${subject.id}" th:text="${subject.name}"></option>
         </select>
 
+        <input id="testTime" name="allottedTime" type="number" min="0" max="255" required th:value="${test.allottedTime}">
+        <label for="testTime" th:text="#{form.text.allottedTime}"></label>
+
         <button class="createQuestion btn btn-success" type="button" th:text="#{form.button.createQuestion}"></button>
         <input hidden id="form.button.addAnswer" th:value="#{form.button.addAnswer}">
         <input hidden id="form.placeholder.question" th:value="#{form.placeholder.question}">
         <input hidden id="form.placeholder.answer" th:value="#{form.placeholder.answer}">
         <input hidden id="form.label.questionNumber" th:value="#{form.label.questionNumber}">
         <div class="questionBlock">
-            <th:block th:each="question,iStat: ${test.questions}">
-                <div th:id="'question#'+@{${questIndex}}" th:with="questIndex=${iStat.size - iStat.index-1}"
+            <th:block th:each="question,iStat: ${test.questions}" th:with="questions=*{test.questions}">
+                <div th:id="'question#'+${questIndex}" th:with="questIndex=${iStat.size - iStat.index-1}"
                      class="question">
-                    <input hidden th:name="questions[__@{${questIndex}}__].id" th:value="${question.id}">
+                    <input hidden th:name="questions[__${questIndex}__].id" th:value="${question.id}">
                     <h4 class="questionHeader col-4" th:text="#{form.label.questionNumber}+' '+@{${questIndex+1}}"></h4>
-                    <th:block th:if="@{${questIndex > 0}}">
+                    <th:block th:if="${questIndex > 0}">
                         <button class="removeQuestion" type="button"> -</button>
                     </th:block>
-                    <textarea class="questionName" th:name="questions[__@{${questIndex}}__].name"
+                    <textarea class="questionName" th:name="questions[__${questIndex}__].name"
                               th:placeholder="#{form.placeholder.question}" maxlength="255"
-                              th:text="${test.questions[__@{${questIndex}}__].name}"
+                              th:text="${test.questions[__${questIndex}__].name}"
                               required></textarea>
                     <button class="createAnswer btn btn-success" type="button"
                             th:text="#{form.button.addAnswer}"></button>
 
-                    <th:block th:each="answer,ansStat: ${question.answers}">
+                    <th:block th:each="answer,ansStat: ${questions[questIndex].answers}">
                         <div th:id="'answer#'+${ansStat.index}" class="answers">
-                            <input hidden th:name="questions[__@{${questIndex}}__].answers[__${ansStat.index}__].id"
+                            <input hidden th:name="questions[__${questIndex}__].answers[__${ansStat.index}__].id"
                                    th:value="${answer.id}">
-                            <input th:name="questions[__@{${questIndex}}__].answers[__${ansStat.index}__].right"
+                            <input th:name="questions[__${questIndex}__].answers[__${ansStat.index}__].right"
                                    type="checkbox"
                                    th:checked="${answer.right}">
-                            <input th:name="questions[__@{${questIndex}}__].answers[__${ansStat.index}__].name"
+                            <input th:name="questions[__${questIndex}__].answers[__${ansStat.index}__].name"
                                    type="text"
                                    th:placeholder="#{form.placeholder.answer}" maxlength="255"
                                    th:value="${answer.name}" required>
@@ -197,20 +217,25 @@
 <div th:fragment="testResult" class="container-fluid">
     <form action="mainStudent" method="get">
 
-        <div th:each="log :*{logs}" th:with="question = ${log.question}, answer=${log.answer}">
-            <div class="question">
-                <h4 th:text="${question.name}"></h4>
-
-                <th:block th:if="${log.isRight}">
-                    <label class="form-check-label rightAnswer" th:text="${answer.name}"></label>
-                </th:block>
-
-                <th:block th:unless="${log.isRight}">
-                    <label class="wrongAnswer" th:text="${answer.name}"></label>
-                </th:block>
-            </div>
+        <div th:each="question :*{questions}">
+            <th:block th:if="${question.answeredRight}">
+                <div class="rightQuestion">
+                    <h4 th:text="${question.name}"></h4>
+                    <div class="answer" th:each="answer: ${question.answers}">
+                        <label class="answer" th:text="${answer.name}"></label>
+                    </div>
+                </div>
+            </th:block>
+            <th:block th:unless="${question.answeredRight}">
+                <div class="wrongQuestion">
+                    <h4 th:text="${question.name}"></h4>
+                    <div class="answer" th:each="answer: ${question.answers}">
+                        <label class="answer" th:text="${answer.name}"></label>
+                    </div>
+                </div>
+            </th:block>
         </div>
-        <button class="btn btn-success" type="submit" th:text="#{form.button.send}"></button>
+        <button class="btn btn-success" type="submit" th:text="#{form.button.continue}"></button>
     </form>
 </div>
 

@@ -7,4 +7,5 @@ import java.util.List;
 public interface AnswerLogService {
     AnswerLog save(AnswerLog answerLog);
     List<AnswerLog> saveAll(List<AnswerLog> answerLogs);
+    List<AnswerLog> getByPassingTestId(Long id);
 }

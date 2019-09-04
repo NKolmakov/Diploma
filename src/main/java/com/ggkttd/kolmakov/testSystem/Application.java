@@ -16,18 +16,13 @@ public class Application {
 	}
 }
 //-----------------------------------------------------------------
-//todo: fix student passing test
 //todo: set test timer
+//todo: create start test time as session attribute
 //todo: allow tutor save created test as file
+//todo: get localize messages from js file
+//todo: set start/end time working with test
 
-//registration
-//authorization
-//error for authorization/registration
-//success for authorization/registration
-//homeStudentPage
-//homeTutorPage
-//homeAdministratorPage
-
+//TODO: STOPPED AT SENDING START/END TIME ON FORM SUBMIT
 
 //-----------------------------------------------------------------
 

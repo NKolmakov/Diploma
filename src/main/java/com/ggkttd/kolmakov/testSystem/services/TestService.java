@@ -8,6 +8,7 @@ import java.util.List;
 public interface TestService {
     List<Test> findAll();
     Test getOne(Long id);
+    Test sortQuestionsByDesc(Test test);
     List<Test> getTestsBySubjectName(String name);
     List<Test> getTestsBySubjectId(Long id);
     List<Test> getNotPassed(Long userId,Long subjectId);

@@ -3,6 +3,7 @@ package com.ggkttd.kolmakov.testSystem.domain;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import lombok.ToString;
 
 import javax.persistence.*;
 
@@ -11,6 +12,7 @@ import javax.persistence.*;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
+@ToString(exclude = "passingTest")
 public class AnswerLog {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -29,7 +31,7 @@ public class AnswerLog {
     private Answer answer;
 
     @Column(name = "is_right")
-    private boolean isRight;
+    private boolean right;
 
 
     public AnswerLog(PassingTest passingTest, Question question) {
@@ -43,10 +45,10 @@ public class AnswerLog {
         this.answer = answer;
     }
 
-    public AnswerLog(PassingTest passingTest, Question question, Answer answer, boolean isRight) {
+    public AnswerLog(PassingTest passingTest, Question question, Answer answer, boolean right) {
         this.passingTest = passingTest;
         this.question = question;
         this.answer = answer;
-        this.isRight = isRight;
+        this.right = right;
     }
 }

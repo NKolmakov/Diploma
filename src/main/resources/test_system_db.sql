@@ -25,7 +25,7 @@ create table if not exists user(
     on update cascade
     on delete set null,
 
-    foreign key (user_group_id) references `group`(id)
+    foreign key (user_group_id) references user_group(id)
     on update cascade
     on delete set null
 );
@@ -40,8 +40,14 @@ create table if not exists test(
     name varchar(70) not null,
     description varchar(255),
     subject_id bigint unsigned,
+    allotted_time tinyint,
+    user_id bigint unsigned,
 
     foreign key(subject_id) references subject(id)
+    on update cascade
+    on delete set null,
+
+    foreign key(user_id) references user(id)
     on update cascade
     on delete set null
 );

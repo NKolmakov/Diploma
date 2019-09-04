@@ -14,8 +14,9 @@ public class GlobalExceptionHandler{
 
     @ExceptionHandler(value = Throwable.class)
     public ModelAndView getNotFoundMessage(Exception ex){
-        LOGGER.warn(ex.getMessage());
-        ModelAndView modelAndView = new ModelAndView("customErrorPage");
+        ex.printStackTrace();
+        LOGGER.warn(ex.getStackTrace().toString());
+        ModelAndView modelAndView = new ModelAndView("errorPage");
         modelAndView.addObject("status",HttpStatus.NOT_FOUND);
         modelAndView.addObject("message",ex.getMessage());
         return modelAndView;
@@ -23,7 +24,7 @@ public class GlobalExceptionHandler{
 
     @ResponseStatus(HttpStatus.NOT_FOUND)
     public ModelAndView getNotFoundMessage(){
-        ModelAndView modelAndView = new ModelAndView("customErrorPage");
+        ModelAndView modelAndView = new ModelAndView("errorPage");
         modelAndView.addObject("status",HttpStatus.NOT_FOUND);
         modelAndView.addObject("message","resource not found");
         return modelAndView;

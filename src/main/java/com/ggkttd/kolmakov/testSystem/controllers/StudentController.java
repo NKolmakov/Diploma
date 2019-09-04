@@ -11,8 +11,10 @@ import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.SessionAttribute;
 
 import javax.servlet.http.HttpSession;
+import java.sql.Time;
 import java.util.List;
 
 @Controller
@@ -24,44 +26,60 @@ public class StudentController {
     private TestService testService;
     @Autowired
     private PassingTestService passingTestService;
+    @Autowired
+    private AnswerLogService answerLogService;
 
     @GetMapping(value = "/mainStudent")
-    public String getHomePage(ModelMap modelMap,HttpSession session){
-        User user = (User)session.getAttribute("user");
-        modelMap.addAttribute("user",user);
+    public String getHomePage(ModelMap modelMap, HttpSession session) {
+        User user = (User) session.getAttribute("user");
+        modelMap.addAttribute("user", user);
         return "mainStudent";
     }
 
     @GetMapping(value = "/getSubjects")
-    public String getSubjects(ModelMap modelMap){
+    public String getSubjects(ModelMap modelMap) {
         List<Subject> subjects = subjectService.getAll();
-        modelMap.addAttribute("subjects",subjects);
-        modelMap.addAttribute("showSubjects",true);
+        modelMap.addAttribute("subjects", subjects);
+        modelMap.addAttribute("showSubjects", true);
         return "mainStudent";
     }
 
     @GetMapping(value = "/getTests")
-    public String getTests(Subject subject,HttpSession session,ModelMap modelMap){
-        User user = (User)session.getAttribute("user");
-        List<Test> tests = testService.getNotPassed(user.getId(),subject.getId());
-        modelMap.addAttribute("tests",tests);
-        modelMap.addAttribute("showTests",true);
+    public String getTests(Subject subject, HttpSession session, ModelMap modelMap) {
+        User user = (User) session.getAttribute("user");
+        List<Test> tests = testService.getNotPassed(user.getId(), subject.getId());
+        modelMap.addAttribute("tests", tests);
+        modelMap.addAttribute("showTests", true);
+        return "mainStudent";
+    }
+
+    @GetMapping(value = "/confirmTest")
+    public String getTestInfo(Test test, ModelMap modelMap) {
+        Test testFromDb = testService.getOne(test.getId());
+        modelMap.addAttribute("test", testFromDb);
+        modelMap.addAttribute("amount", testFromDb.getQuestions().size());
+        modelMap.addAttribute("getTestInfo", true);
         return "mainStudent";
     }
 
     @GetMapping(value = "/passTest")
-    public String getTest(Test test, ModelMap modelMap){
+    public String getTest(Test test, ModelMap modelMap) {
         Test testFromDb = testService.getOne(test.getId());
-        modelMap.addAttribute("test",testFromDb);
-        modelMap.addAttribute("passTest",true);
+        modelMap.addAttribute("test", testFromDb);
+        modelMap.addAttribute("passTest", true);
         return "mainStudent";
     }
 
     @PostMapping(value = "/passTest")
-    public String saveStudentTest(PassingTest passingTest,HttpSession session, ModelMap modelMap){
-        User user = (User)session.getAttribute("user");
-        passingTest.setUserId(user.getId());
-        passingTestService.save(passingTest);
-        return "redirect:mainStudent";
+    public String saveStudentTest(@SessionAttribute("user") User user,
+                                  Time startTime, Time endTime,
+                                  PassingTest passingTest, ModelMap modelMap) {
+//        passingTest.setUserId(user.getId());
+        passingTest.setUser(user);
+        PassingTest savedPassingTest = passingTestService.save(passingTest);
+        List<Question> questions = passingTestService.getCheckedQuestions(savedPassingTest);
+        modelMap.addAttribute("questions", questions);
+        modelMap.addAttribute("showTestResult", true);
+        return "mainStudent";
     }
 }

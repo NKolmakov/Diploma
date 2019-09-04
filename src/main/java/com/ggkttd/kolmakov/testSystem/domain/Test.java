@@ -34,4 +34,10 @@ public class Test {
     @OneToMany(mappedBy = "test", cascade = CascadeType.ALL,fetch = FetchType.EAGER)
     private List<Question> questions;
 
+    @Column(name = "allotted_time")
+    private Integer allottedTime;
+
+    @ManyToOne(cascade = CascadeType.MERGE)
+    @JoinColumn(name = "user_id")
+    private User owner;
 }

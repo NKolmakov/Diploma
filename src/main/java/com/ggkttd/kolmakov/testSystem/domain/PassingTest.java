@@ -23,11 +23,11 @@ public class PassingTest {
     @JoinColumn(name = "test_id")
     private Test test;
 
-//    @ManyToOne(cascade = CascadeType.ALL)
-//    @JoinColumn(name = "user_id")
-//    private User user;
+    @ManyToOne(cascade = CascadeType.MERGE)
     @JoinColumn(name = "user_id")
-    private Long userId;
+    private User user;
+//    @JoinColumn(name = "user_id")
+//    private Long userId;
 
     private Date date;
 
