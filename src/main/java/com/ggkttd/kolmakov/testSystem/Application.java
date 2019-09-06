@@ -16,13 +16,11 @@ public class Application {
 	}
 }
 //-----------------------------------------------------------------
-//todo: set test timer
-//todo: create start test time as session attribute
 //todo: allow tutor save created test as file
-//todo: get localize messages from js file
-//todo: set start/end time working with test
-
-//TODO: STOPPED AT SENDING START/END TIME ON FORM SUBMIT
-
+//todo: add to administrator responsibility to check registered users
+//todo: check if all questions have at least one right answer
+//todo: create opportunity to exit from session
+//todo: add navigation between answers tutor create test
+//todo: set answers amount max=5;
 //-----------------------------------------------------------------
 

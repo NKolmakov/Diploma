@@ -66,6 +66,9 @@ public class StudentController {
     @GetMapping(value = "/passTest")
     public String getTest(Test test, ModelMap modelMap) {
         Test testFromDb = testService.getOne(test.getId());
+        if(testFromDb.getAllottedTime() > 0){
+            modelMap.addAttribute("setTime",true);
+        }
         modelMap.addAttribute("test", testFromDb);
         modelMap.addAttribute("passTest", true);
         return "mainStudent";

@@ -1,3 +1,5 @@
+drop database if exists test_system;
+
 create database if not exists test_system;
 
 use test_system;
@@ -5,12 +7,14 @@ use test_system;
 create table if not exists `role`(
 	id bigint unsigned not null auto_increment primary key,
     name varchar(20) not null
-);
+)
+CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
 
 create table if not exists user_group(
 	id bigint unsigned not null auto_increment primary key,
     name varchar(20) not null
-);
+)
+CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
 
 create table if not exists user(
 	id bigint unsigned not null auto_increment primary key,
@@ -28,12 +32,14 @@ create table if not exists user(
     foreign key (user_group_id) references user_group(id)
     on update cascade
     on delete set null
-);
+)
+CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
 
 create table if not exists subject(
 	id bigint unsigned not null auto_increment primary key,
     name varchar(70) not null
-);
+)
+CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
 
 create table if not exists test(
 	id bigint unsigned not null auto_increment primary key,
@@ -50,7 +56,8 @@ create table if not exists test(
     foreign key(user_id) references user(id)
     on update cascade
     on delete set null
-);
+)
+CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
 
 create table if not exists passing_test(
 	id bigint unsigned not null auto_increment primary key,
@@ -70,7 +77,8 @@ create table if not exists passing_test(
     foreign key(test_id) references test(id)
     on update cascade
     on delete cascade
-);
+)
+CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
 
 create table if not exists question(
 	id bigint unsigned not null auto_increment primary key,
@@ -80,7 +88,8 @@ create table if not exists question(
     foreign key(test_id) references test(id)
     on update cascade
     on delete cascade
-);
+)
+CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
 
 create table if not exists answer(
 	id bigint unsigned not null auto_increment primary key,
@@ -91,7 +100,8 @@ create table if not exists answer(
     foreign key(question_id) references question(id)
     on update cascade
     on delete cascade
-);
+)
+CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
 
 create table if not exists answer_log(
 	id bigint unsigned not null auto_increment primary key,
@@ -111,4 +121,5 @@ create table if not exists answer_log(
     foreign key(answer_id) references answer(id)
     on update cascade
     on delete cascade
-);
+)
+CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;

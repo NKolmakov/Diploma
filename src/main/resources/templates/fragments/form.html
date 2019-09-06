@@ -57,12 +57,14 @@
 <div th:fragment="passTest" class="container-fluid">
     <form id="passTest" action="passTest" method="post" th:object="${passingTest}">
         <input hidden name="test.id" th:value="${test.id}">
-        <input hidden id="initTime" th:value="${test.allottedTime}">
         <h1 th:text="${test.name}"></h1>
 
-        <div class="timer row justify-content-center border rounded-pill">
-            <h3 id="time"></h3>
-        </div>
+        <th:block th:if="${setTime}">
+            <input hidden id="initTime" th:value="${test.allottedTime}">
+            <div class="timer row justify-content-center border rounded-pill">
+                <h3 id="time"></h3>
+            </div>
+        </th:block>
 
         <div th:each="question,questStat :${test.questions}" th:with="quest=${questStat.index}">
             <div th:id="'question#'+@{${quest}}" class="question">

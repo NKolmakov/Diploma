@@ -3,6 +3,7 @@ package com.ggkttd.kolmakov.testSystem.services.impl;
 import com.ggkttd.kolmakov.testSystem.domain.Role;
 import com.ggkttd.kolmakov.testSystem.domain.User;
 import com.ggkttd.kolmakov.testSystem.exceptions.NotFoundException;
+import com.ggkttd.kolmakov.testSystem.repo.RoleRepo;
 import com.ggkttd.kolmakov.testSystem.repo.UserRepo;
 import com.ggkttd.kolmakov.testSystem.services.UserService;
 import com.ggkttd.kolmakov.testSystem.utils.UserRoles;
@@ -19,6 +20,8 @@ public class UserServiceImpl implements UserService {
     @Autowired
     private UserRepo userRepo;
     @Autowired
+    private RoleRepo roleRepo;
+    @Autowired
     private BCryptPasswordEncoder encoder;
 
     @Override
@@ -34,8 +37,13 @@ public class UserServiceImpl implements UserService {
     @Override
     public User save(User user) {
         String encodedPassword = encoder.encode(user.getPassword());
+        Role roleFromDb = roleRepo.getRoleByName(UserRoles.STUDENT.toString());
         //todo: MOCK
-        user.setRole(new Role(UserRoles.STUDENT));
+        if (roleFromDb == null) {
+            user.setRole(new Role(UserRoles.STUDENT));
+        } else {
+            user.setRole(roleFromDb);
+        }
         user.setPassword(encodedPassword);
         return userRepo.save(user);
     }

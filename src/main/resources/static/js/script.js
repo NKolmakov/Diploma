@@ -81,44 +81,35 @@ $(function(){
     });
 });
 
-/*$(window).load(function(){
-    var timer = $('.timer');
-
-    if(timer != null){
-        var minutes = $($(timer).find(":header[id*='time']")[0]).val();
-        var hours = minutes / 60;
-        minutes = minutes % 60;        
-        var seconds = 00;
-        timer.innerHTML = 
-    }
-});*/
-//var questionPlaceholder = document.getElementById("form.placeholder.question").value;
-//var answerPlaceholder = document.getElementById("form.placeholder.answer").value;
-//var questionNumber = document.getElementById("form.label.questionNumber").value;
-//var addAnswer = document.getElementById("form.button.addAnswer").value;
-
-var questionPlaceholder = getLocalizedCaption("form.placeholder.question",questionPlaceholder);
-var answerPlaceholder = getLocalizedCaption("form.placeholder.answer");
-var questionNumber = getLocalizedCaption("form.label.questionNumber");
-var addAnswer = getLocalizedCaption("form.button.addAnswer");
-
-function getLocalizedCaption(property){
+function getFromBundle(property){
+    var result;
     $.ajax({
         type:"GET",
         url:"/getProperty?property="+property,
         data:property,
-        dataType:"text",
-        contentType:'text; charset=utf-8',
-        success:function(result){
-            return result;
+        mimeType:"text/plain; charset=UTF-8",
+        async:false,
+        success:function(response){
+            result = response;
         }
     });
+
+    if(result == null){
+        return "";
+    }else{
+        return result;
+    }
 }
 
 function createQuestion() {
     var parentObject = $(".questionBlock")[0];
     var questions = $(parentObject).find("div[id^='question#']");
     var questionLength = questions.length;
+
+    var questionNumber = getFromBundle("form.label.questionNumber");
+    var questionPlaceholder = getFromBundle("form.placeholder.question");
+    var addAnswer = getFromBundle("form.button.addAnswer");
+    var answerPlaceholder = getFromBundle("form.placeholder.answer");
 
     if (questionLength == null) {
         questionLength = 0;
@@ -149,6 +140,7 @@ function removeQuestion(question) {
 
 function updateQuestions(questions) {
     if (questions != null) {
+    var questionNumber = getFromBundle("form.label.questionNumber");
         for (var i = 0; i < questions.length; i++) {
             var currentQuestionNumber = questions.length - i - 1;
             questions[i].id = "question#" + currentQuestionNumber;
@@ -166,6 +158,9 @@ function updateQuestions(questions) {
         var questNumber = $(question).attr('id').replace("question#", "");
         var answers = $(question).find("div[id^='answer#']");
         var answerLength = answers.length;
+
+        var answerPlaceholder = getFromBundle("form.placeholder.answer");
+
         if (answerLength == null) {
             answerLength = 0;
         }
