@@ -103,7 +103,7 @@
 </div>
 
 <div th:fragment="createTest" class="container-fluid">
-    <form action="createTest" method="post">
+    <form class="container-fluid" action="createTest" method="post">
 
         <label for="testName" th:text="#{form.label.testName}"></label>
         <input id="testName" class="form-control" name="name" type="text" maxlength="70" required>
@@ -122,21 +122,21 @@
         <input id="testTime" class="form-control col-1" name="allottedTime" type="number" min="0" max="255" required>
 
         <button class="createQuestion btn btn-success" type="button" th:text="#{form.button.createQuestion}"></button>
-        <input hidden id="form.button.addAnswer" th:value="#{form.button.addAnswer}">
-        <input hidden id="form.placeholder.question" th:value="#{form.placeholder.question}">
-        <input hidden id="form.placeholder.answer" th:value="#{form.placeholder.answer}">
-        <input hidden id="form.label.questionNumber" th:value="#{form.label.questionNumber}">
         <div class="questionBlock">
             <div id="question#0" class="question">
                 <h4 class="questionHeader col-4" th:text="#{form.label.questionNumber}+' 1'"></h4>
-                <textarea class="questionName" th:name="questions[0].name"
-                          th:placeholder="#{form.placeholder.question}" maxlength="255"
-                          required></textarea>
-                <button class="createAnswer btn btn-success" type="button" th:text="#{form.button.addAnswer}"></button>
-                <div id="answer#0" class="answers">
-                    <input th:name="questions[0].answers[0].right" type="checkbox">
-                    <input th:name="questions[0].answers[0].name" type="text"
-                           th:placeholder="#{form.placeholder.answer}" maxlength="255" required><br>
+                <div class="container row">
+                    <textarea class="questionName" th:name="questions[0].name"
+                              th:placeholder="#{form.placeholder.question}" maxlength="255"
+                              required></textarea>
+                    <button class="createAnswer align-self-center btn btn-success" type="button" th:text="#{form.button.addAnswer}"></button>
+                </div>
+                <div id="answer#0" class="answers container row align-items-center my-2">
+<!--                    <input type="checkbox" class="custom-control-input" id="defaultUnchecked">-->
+                    <input th:id="'input#0'" class="custom-control-input" th:name="questions[0].answers[0].right" type="checkbox">
+                    <label class="custom-control-label align-self-center" th:for="'input#0'"></label>
+                    <textarea class="form-control form-control col-lg-3 col-md-6" th:name="questions[0].answers[0].name"
+                              th:placeholder="#{form.placeholder.answer}" maxlength="255" required></textarea><br>
                 </div>
             </div>
         </div>
@@ -166,10 +166,6 @@
         <label for="testTime" th:text="#{form.text.allottedTime}"></label>
 
         <button class="createQuestion btn btn-success" type="button" th:text="#{form.button.createQuestion}"></button>
-        <input hidden id="form.button.addAnswer" th:value="#{form.button.addAnswer}">
-        <input hidden id="form.placeholder.question" th:value="#{form.placeholder.question}">
-        <input hidden id="form.placeholder.answer" th:value="#{form.placeholder.answer}">
-        <input hidden id="form.label.questionNumber" th:value="#{form.label.questionNumber}">
         <div class="questionBlock">
             <th:block th:each="question,iStat: ${test.questions}" th:with="questions=*{test.questions}">
                 <div th:id="'question#'+${questIndex}" th:with="questIndex=${iStat.size - iStat.index-1}"

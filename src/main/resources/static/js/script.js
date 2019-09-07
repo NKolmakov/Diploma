@@ -118,16 +118,16 @@ function createQuestion() {
     $(parentObject)
         .prepend($('<div id="question#' + questionLength + '" class="question"></div>')
             .prepend($('<h4 class="questionHeader col-lg-6">' + questionNumber + (questionLength + 1) + '</h4>'))
-            .append($('<button class="removeQuestion"> - </button>'))
+            .append($('<button class="removeQuestion btn btn-danger"> - </button>'))
             .append($('<textarea name="questions[' + questionLength + '].name" class="questionName"' +
                 'placeholder="' + questionPlaceholder + '"' +
                 'maxlength="255" required' +
                 '</textarea>'))
-            .append($('<button class="createAnswer" type="button">' + addAnswer + '</button>'))
+            .append($('<button class="createAnswer btn btn-success" type="button">' + addAnswer + '</button>'))
             .append($('<div id="answer#0" class="answers"</div>')
                 .append($('<input name="questions[' + questionLength + '].answers[0].right" type="checkbox">'))
-                .append($('<input name="questions[' + questionLength + '].answers[0].name" type="text"' +
-                    'placeholder="' + answerPlaceholder + '" maxlength="255" required><br>'))
+                .append($('<textarea class="form-control" name="questions[' + questionLength + '].answers[0].name"' +
+                    'placeholder="' + answerPlaceholder + '" maxlength="255" required></textarea><br>'))
             )
         );
 }
@@ -168,9 +168,9 @@ function updateQuestions(questions) {
           $((answers)[answerLength -1])
             .after($('<div id="answer#' + answerLength + '" class="answers"></div>')
                 .append($('<input name="questions[' + questNumber + '].answers[' + answerLength + '].right" type="checkbox">'))
-                .append($('<input name="questions[' + questNumber + '].answers[' + answerLength + '].name" type="text"' +
-                    'placeholder="' + answerPlaceholder + '" maxlength="255" required>'))
-                .append($('<button class="removeAnswer" type="button"> - </button><br>'))
+                .append($('<textarea class="form-control" name="questions[' + questNumber + '].answers[0].name"' +
+                                    'placeholder="' + answerPlaceholder + '" maxlength="255" required></textarea><br>'))
+                .append($('<button class="removeAnswer btn btn-danger" type="button"> - </button><br>'))
             )
     }
 
@@ -190,41 +190,30 @@ function updateQuestions(questions) {
                 var answerNum = answers.length - i - 1;
                 var currentQuestionNumber = $($(answers[i]).closest(".question")[0]).attr('id').replace("question#","");
                 var inputCheckBox = $(answers[i]).find("input:checkbox")[0];
-                var inputs = $(answers[i]).find("input:text");
+                var answerId = $(answers[i]).find("input:text")[0];
+                var textarea = $(answers[i]).find("textarea")[0];
                 var newCheckbox = $(inputCheckBox).clone()[0];
                 answers[i].id = "answer#" + answerNum;
 
                 newCheckbox.setAttribute('name','questions[' + currentQuestionNumber + '].answers[' + answerNum + '].right');
                 newCheckbox.setAttribute('value',$(inputCheckBox).val());
 
-                var newInputText;
-                var answerId;
+                var newTextarea = $(textarea).clone()[0];
                 var newAnswerId;
-                
-                //answer has id if input text length > 1
-                if(inputs.length > 1){
-                    var answerId = inputs[0];
-                    var inputText = inputs[1];
-                    var newAnswerId = $(answerId).clone()[0];
-                    var newInputText = $(inputText).clone()[0];
-
-                }else{                    
-                    var inputText = inputs[0];                    
-                    var newInputText = $(inputText).clone()[0];
-                }
 
                 if(answerId != null){
+                    newAnswerId = answerId.clone()[0];
                     newAnswerId.setAttribute('name','questions['+currentQuestionNumber+'].answers['+answerNum+'].id');
                     newAnswerId.setAttribute('value',$(answerId).val());
 
                     answerId.parentNode.replaceChild(newAnswerId,answerId);
                 }
                 
-                newInputText.setAttribute('name', 'questions[' + currentQuestionNumber + '].answers[' + answerNum + '].name');
-                newInputText.setAttribute('value', $(inputText).val());
+                newTextarea.setAttribute('name', 'questions[' + currentQuestionNumber + '].answers[' + answerNum + '].name');
+                newTextarea.setAttribute('value', $(textarea).val());
                 
                 inputCheckBox.parentNode.replaceChild(newCheckbox, inputCheckBox);
-                inputText.parentNode.replaceChild(newInputText,inputText);
+                textarea.parentNode.replaceChild(newTextarea,textarea);
                 
             }
         }

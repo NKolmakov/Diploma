@@ -22,5 +22,6 @@ public class Application {
 //todo: create opportunity to exit from session
 //todo: add navigation between answers tutor create test
 //todo: set answers amount max=5;
+//todo: create html page style with inheritance from bootstrap
 //-----------------------------------------------------------------
 

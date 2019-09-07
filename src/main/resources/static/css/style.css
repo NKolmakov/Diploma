@@ -1,3 +1,5 @@
+@import url("bootstrap.css");
+
 .navbar-brad img {
     width:130px;
     height:80px;
@@ -15,10 +17,6 @@ navbar-nav li{
 
 }
 
-.answer{
-
-}
-
 .rightQuestion{
     .question;
     background-color:green;
@@ -27,4 +25,8 @@ navbar-nav li{
 .wrongQuestion{
     .question;
     background-color:red;
+}
+
+textarea{
+    resize:none;
 }
