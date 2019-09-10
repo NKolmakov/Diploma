@@ -243,3 +243,41 @@ function updateQuestions(questions) {
         })
     });
 
+    //download test as text document
+    $(function(){
+        $(".download").click(function(){
+            var result;
+            var testId = $($(this).closest("tr").find("td")[0]).attr("id");
+                $(this).attr({target: '_blank', href: "/getDocument?testId="+testId});
+        })
+    });
+
+    $('.download').click(function () {
+        var testId = $($(this).closest("tr").find("td")[0]).attr("id");
+        $.ajax({
+            url: "/getDocument?testId="+testId,
+            method: 'GET',
+            mimeType:'charset=utf-8',
+            xhrFields: {
+                responseType: 'blob'
+            },
+            success: function (data,textStatus,xhr) {
+                var a = document.createElement('a');
+                var url = window.URL.createObjectURL(data);
+                var filename = "";
+                var disposition = xhr.getResponseHeader('Content-Disposition');
+                if (disposition && disposition.indexOf('attachment') !== -1) {
+                    var filenameRegex = /filename[^;=\n]*=((['"]).*?\2|[^;\n]*)/;
+                    var matches = filenameRegex.exec(disposition);
+                    if (matches != null && matches[1]) filename = matches[1].replace(/['"]/g, '');
+                }
+                a.href = url;
+                a.download = filename;
+                document.body.append(a);
+                a.click();
+                a.remove();
+                window.URL.revokeObjectURL(url);
+            }
+        });
+    });
+

@@ -45,7 +45,7 @@ public class AuthorizationController {
     @GetMapping(value = "/exit")
     public String exit(HttpSession session) {
         session.removeAttribute("user");
-        return "authorization";
+        return "redirect:/authorization";
     }
 
     @PostMapping(value = "/authorization")

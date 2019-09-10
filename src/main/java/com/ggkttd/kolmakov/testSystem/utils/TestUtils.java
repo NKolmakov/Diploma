@@ -7,6 +7,9 @@ import com.ggkttd.kolmakov.testSystem.domain.Test;
 import com.ggkttd.kolmakov.testSystem.exceptions.NotFoundException;
 import org.springframework.stereotype.Component;
 
+import java.io.File;
+import java.io.IOException;
+import java.nio.charset.StandardCharsets;
 import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
@@ -14,13 +17,13 @@ import java.util.List;
 @Component
 public class TestUtils {
 
-    public List<Question> getResultFromUserAnswers(Test test, List<AnswerLog> logsFromDb){
+    public List<Question> getResultFromUserAnswers(Test test, List<AnswerLog> logsFromDb) {
         List<Question> questions = new LinkedList<>();
 
-        for (Question question:test.getQuestions()){
+        for (Question question : test.getQuestions()) {
             boolean right = true;
-            for (AnswerLog answerLog:getLogsByQuestion(logsFromDb,question)){
-                if(!answerLog.isRight()){
+            for (AnswerLog answerLog : getLogsByQuestion(logsFromDb, question)) {
+                if (!answerLog.isRight()) {
                     right = false;
                     break;
                 }
@@ -69,5 +72,20 @@ public class TestUtils {
         throw new NotFoundException("ANSWER #" + id + " NOT FOUND");
     }
 
+    public File saveTest2File(Test test, String path) {
+        String fileName = path + test.getOwner().getName() + " " + test.getOwner().getSurname() + " " + test.getName() + ".doc";
+        try {
+            File file = new File(fileName);
+            file.createNewFile();
+            return file;
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
+
+    public String convert2Utf8(String string){
+       return new String(string.getBytes(StandardCharsets.ISO_8859_1), StandardCharsets.UTF_8);
+    }
 
 }

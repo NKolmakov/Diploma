@@ -12,6 +12,7 @@ public interface TestService {
     List<Test> getTestsBySubjectName(String name);
     List<Test> getTestsBySubjectId(Long id);
     List<Test> getNotPassed(Long userId,Long subjectId);
+    List<Test> getByTutorId(Long tutorId);
     Test save(Test test);
     void delete(Test test);
 }

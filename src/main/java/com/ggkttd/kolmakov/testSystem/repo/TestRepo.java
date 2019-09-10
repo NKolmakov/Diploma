@@ -22,4 +22,7 @@ public interface TestRepo extends JpaRepository<Test, Long> {
             "t.id not in(select test_id from passing_test p where user_id = :userId) and " +
             "t.subject_id = :subjectId", nativeQuery = true)
     List<Test> getNotPassedTestsBySubjectId(@Param("userId") Long userId, @Param("subjectId") Long subjectId);
+
+    @Query(value = "select * from test t where t.user_id = :id",nativeQuery = true)
+    List<Test> getTestsByUserId(@Param("id") Long id);
 }

@@ -47,7 +47,7 @@ create table if not exists test(
     description varchar(255),
     subject_id bigint unsigned,
     allotted_time tinyint,
-    user_id bigint unsigned,
+    user_id bigint unsigned not null,
 
     foreign key(subject_id) references subject(id)
     on update cascade

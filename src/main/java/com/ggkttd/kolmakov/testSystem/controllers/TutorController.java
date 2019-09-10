@@ -3,19 +3,20 @@ package com.ggkttd.kolmakov.testSystem.controllers;
 import com.ggkttd.kolmakov.testSystem.domain.Subject;
 import com.ggkttd.kolmakov.testSystem.domain.Test;
 import com.ggkttd.kolmakov.testSystem.domain.User;
+import com.ggkttd.kolmakov.testSystem.exceptions.AccessDeniedException;
 import com.ggkttd.kolmakov.testSystem.services.SubjectService;
 import com.ggkttd.kolmakov.testSystem.services.TestService;
 import com.ggkttd.kolmakov.testSystem.services.UserService;
+import com.ggkttd.kolmakov.testSystem.utils.TestUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.MessageSource;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.SessionAttribute;
+import org.springframework.web.bind.annotation.*;
 
+import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
+import java.io.File;
 import java.util.List;
 import java.util.Locale;
 
@@ -47,21 +48,22 @@ public class TutorController {
     }
 
     @GetMapping(value = "/getTestList")
-    public String getTestList(ModelMap modelMap) {
-        List<Test> tests = testService.findAll();
+    public String getTestList(@SessionAttribute("user") User user, ModelMap modelMap) {
+        List<Test> tests = testService.getByTutorId(user.getId());
         modelMap.addAttribute("selectTest", true);
         modelMap.addAttribute("tests", tests);
         return "mainTutor";
     }
 
     @GetMapping(value = "/editTest")
-    public String getTest2Edit(Test test, ModelMap modelMap) {
+    public String getTest2Edit(@SessionAttribute("user") User user, Test test, ModelMap modelMap) {
         Test testFromDb = testService.getOne(test.getId());
+        if (!testFromDb.getOwner().getId().equals(user.getId())) {
+            throw new AccessDeniedException();
+        }
         testFromDb = testService.sortQuestionsByDesc(testFromDb);
         List<Subject> subjects = subjectService.getAll();
-        if (subjects.contains(testFromDb.getSubject())) {
-            subjects.remove(testFromDb.getSubject());
-        }
+        subjects.remove(testFromDb.getSubject());
         modelMap.addAttribute("editTest", true);
         modelMap.addAttribute("test", testFromDb);
         modelMap.addAttribute("subjects", subjects);
@@ -69,16 +71,23 @@ public class TutorController {
     }
 
     @GetMapping(value = "/deleteTest")
-    public String getTestList2Delete(ModelMap modelMap) {
-        List<Test> tests = testService.findAll();
+    public String getTestList2Delete(@SessionAttribute("user") User user, ModelMap modelMap) {
+        List<Test> tests = testService.getByTutorId(user.getId());
         modelMap.addAttribute("deleteTest", true);
         modelMap.addAttribute("tests", tests);
         return "mainTutor";
     }
 
+    @GetMapping(value="/getTestGrid")
+    public String getTestListAsGrid(@SessionAttribute("user") User user,ModelMap modelMap){
+        List<Test> tests = testService.getByTutorId(user.getId());
+        modelMap.addAttribute("testGrid", true);
+        modelMap.addAttribute("tests", tests);
+        return "mainTutor";
+    }
+
     @PostMapping(value = "/createTest")
-    public String saveTest(@SessionAttribute("user") User user, Test test, ModelMap modelMap, Locale locale) {
-//        User userFromDb = userService.getUser(user.getId());
+    public String saveTest(@SessionAttribute("user") User user, Test test, ModelMap modelMap, Locale locale, HttpServletResponse response ) {
         test.setOwner(user);
         testService.save(test);
         modelMap.addAttribute("success", true);
@@ -87,7 +96,8 @@ public class TutorController {
     }
 
     @PostMapping(value = "/editTest")
-    public String getEditedTest(Test test, ModelMap modelMap) {
+    public String getEditedTest(@SessionAttribute("user") User user, Test test, ModelMap modelMap) {
+        test.setOwner(user);
         testService.save(test);
         return "mainTutor";
     }

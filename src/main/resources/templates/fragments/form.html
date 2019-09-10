@@ -1,4 +1,4 @@
-<div th:fragment="authorization">
+<div th:fragment="authorization" class="container-fluid">
     <div class="form-group">
         <label for="login" th:text="#{form.label.login}"></label>
         <input id="login" name="login" class="form-control"
@@ -11,7 +11,7 @@
     </div>
 </div>
 
-<div th:fragment="registration">
+<div th:fragment="registration" class="container-fluid">
     <div class="form-group">
         <label for="name" th:text="#{form.label.name}"></label>
         <input id="name" name="name" class="form-control"
@@ -30,7 +30,7 @@
     </div>
 </div>
 
-<div th:fragment="selectSubject">
+<div th:fragment="selectSubject" class="container-fluid">
     <form action="getTests" method="get">
         <label for="subject" th:text="#{form.label.selectSubject}"></label>
         <select id="subject" th:name="subject" class="form-control">
@@ -47,7 +47,7 @@
     </select>
 </div>
 
-<div th:fragment="testInfo">
+<div th:fragment="testInfo" class="container-fluid">
     <input hidden th:name="test" th:value="${test.id}">
     <p th:text="#{form.text.testName}+':'+${test.name}"></p>
     <p th:text="#{form.text.questionsAmount}+':'+${amount}"></p>
@@ -235,5 +235,17 @@
         </div>
         <button class="btn btn-success" type="submit" th:text="#{form.button.continue}"></button>
     </form>
+</div>
+
+<div th:fragment="testGrid" class="container-fluid">
+    <table class="table table-striped">
+        <tbody>
+            <tr th:each="test: ${tests}">
+                <th scope="row"></th>
+                <td th:id="${test.id}" th:text="${test.name}"></td>
+                <td><button class="download btn btn-primary" th:text="#{form.button.download}"></button> </td>
+            </tr>
+        </tbody>
+    </table>
 </div>
 

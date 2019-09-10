@@ -69,6 +69,11 @@ public class TestServiceImpl implements TestService {
     }
 
     @Override
+    public List<Test> getByTutorId(Long tutorId) {
+        return testRepo.getTestsByUserId(tutorId);
+    }
+
+    @Override
     public Test save(Test test) {
         validateTest(test);
         return testRepo.save(test);

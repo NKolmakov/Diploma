@@ -20,11 +20,12 @@
         <a href="getSubjects" th:text="#{form.href.passTest}"></a><br>
         <a href="#" th:text="#{form.href.getStatistic}"></a>
     </div>
+
     <th:block th:if="${showSubjects}">
         <div th:replace="fragments/form.html::selectSubject"></div>
     </th:block>
     <th:block th:if="${showTests}">
-        <form action="confirmTest" method="get">
+        <form action="confirmTest" method="get" class="container-fluid">
             <div th:replace="fragments/form.html::selectTest"></div>
             <button class="btn btn-primary" type="submit" th:text="#{form.button.continue}"></button>
         </form>

@@ -74,6 +74,11 @@ public class StudentController {
         return "mainStudent";
     }
 
+//    @GetMapping(value="/statistic")
+//    public String getStatistic(@SessionAttribute("user")User user){
+//
+//    }
+
     @PostMapping(value = "/passTest")
     public String saveStudentTest(@SessionAttribute("user") User user, PassingTest passingTest, ModelMap modelMap) {
         passingTest.setUser(user);
