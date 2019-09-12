@@ -1,6 +1,7 @@
 package com.ggkttd.kolmakov.testSystem.controllers;
 
 import com.ggkttd.kolmakov.testSystem.domain.Group;
+import com.ggkttd.kolmakov.testSystem.domain.Role;
 import com.ggkttd.kolmakov.testSystem.domain.User;
 import com.ggkttd.kolmakov.testSystem.services.GroupService;
 import com.ggkttd.kolmakov.testSystem.services.UserService;
@@ -11,6 +12,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.SessionAttribute;
 
 import javax.servlet.http.HttpSession;
 import java.util.List;
@@ -70,6 +72,7 @@ public class AuthorizationController {
         return "authorization";
     }
 
+
     @PostMapping(value = "/registration")
     public String signUp(User userFromClient, ModelMap modelMap, Locale locale) {
         List<Group> groups = groupService.getAll();
@@ -88,5 +91,23 @@ public class AuthorizationController {
 
         //after registration process show registration form with registration result
         return "registration";
+    }
+
+    @GetMapping(value = "/home")
+    public String resolveHomePage(@SessionAttribute(value = "user", required = false) User user) {
+        if (user != null && user.isAuthorized()) {
+            UserRoles role = user.getRole().getName();
+            if (role == UserRoles.STUDENT) {
+                return "redirect:/student/mainStudent";
+            }
+            if (role == UserRoles.TUTOR) {
+                return "redirect:/tutor/mainTutor";
+            }
+            if (role == UserRoles.ADMINISTRATOR) {
+                return "redirect:/administrator/mainAdministrator";
+            }
+        }
+
+        return "redirect:/authorization";
     }
 }

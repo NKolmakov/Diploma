@@ -168,7 +168,7 @@ function updateQuestions(questions) {
           $((answers)[answerLength -1])
             .after($('<div id="answer#' + answerLength + '" class="answers"></div>')
                 .append($('<input name="questions[' + questNumber + '].answers[' + answerLength + '].right" type="checkbox">'))
-                .append($('<textarea class="form-control" name="questions[' + questNumber + '].answers[0].name"' +
+                .append($('<textarea class="form-control" name="questions[' + questNumber + '].answers['+answerLength+'].name"' +
                                     'placeholder="' + answerPlaceholder + '" maxlength="255" required></textarea><br>'))
                 .append($('<button class="removeAnswer btn btn-danger" type="button"> - </button><br>'))
             )

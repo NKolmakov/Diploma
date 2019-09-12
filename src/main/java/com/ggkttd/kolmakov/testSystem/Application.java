@@ -16,12 +16,35 @@ public class Application {
 	}
 }
 //-----------------------------------------------------------------
-//todo: allow tutor save created test as file
 //todo: add to administrator responsibility to check registered users
 //todo: check if all questions have at least one right answer
-//todo: create opportunity to exit from session
 //todo: add navigation between answers tutor create test
 //todo: set answers amount max=5;
 //todo: create html page style with inheritance from bootstrap
+//todo: universal error page
+//todo: add module to see user test with right and wrong answers
+//todo: add navigation between right/wrong students answers
 //-----------------------------------------------------------------
 
+//todo: FRONTEND INTERACTION
+//tutor after create, delete update show messages
+
+//todo: USER STATISTIC
+//пройдено тестов
+//осталось пройти тестов
+//среднее время на выполнение теста
+//процент верных ответов
+//процент неверных ответов
+//наибольшая успеваемость по предмету
+//наименьшая успеваемость по предмету
+//рейтинг среди сдавших тест (если одинаково у нескольких студентов может быть одинаковое значение рейтинга)
+
+
+//todo: TUTOR STATISTIC
+//создано тестов -> посмотреть список тестов
+//пройденные студентами кол-во -> посмотреть кто прошел, какие тесты -> посмотреть результаты
+//самые высокие баллы у студентов по тесту(ам)
+//самые низкие баллы у студентов по тесту(ам)
+//самая успешная группа по предмету (можно рейтинг 1-е 3 группы)
+//наименее успешная группа по предмету
+//

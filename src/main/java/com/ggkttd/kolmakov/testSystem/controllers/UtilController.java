@@ -49,17 +49,19 @@ public class UtilController {
     public void getDocumentFromTest(Long testId, HttpServletResponse response) {
         Transliterator transliterator = Transliterator.getInstance("Any-Latin");
         Test test = testService.getOne(testId);
-        File savedTest = utils.saveTest2File(test, "c:\\audios\\docs\\");
+        File docxTest = utils.saveTest2File(test);
         response.setHeader("Content-Description", "File Transfer");
         response.setHeader("Content-Type", "application/octet-stream; charset=UTF-8");
-        response.setHeader("Content-Disposition", "attachment; filename=" + transliterator.transliterate(savedTest.getName()));
+        response.setHeader("Content-Disposition", "attachment; filename=" + transliterator.transliterate(docxTest.getName()));
         response.setHeader("Content-Transfer-Encoding", "binary");
-        response.setHeader("Content-Length", String.valueOf(savedTest.length()));
+        response.setHeader("Content-Length", String.valueOf(docxTest.length()));
         try
         {
-            Files.copy(savedTest.toPath(), response.getOutputStream());
+            Files.copy(docxTest.toPath(), response.getOutputStream());
             response.getOutputStream().flush();
+            docxTest.delete();
         } catch (IOException e) {
+            docxTest.delete();
             e.printStackTrace();
         }
     }
