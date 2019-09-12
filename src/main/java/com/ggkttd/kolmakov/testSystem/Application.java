@@ -24,6 +24,8 @@ public class Application {
 //todo: universal error page
 //todo: add module to see user test with right and wrong answers
 //todo: add navigation between right/wrong students answers
+//todo: tutor can see user profile
+//todo: tutor search test filters
 //-----------------------------------------------------------------
 
 //todo: FRONTEND INTERACTION
