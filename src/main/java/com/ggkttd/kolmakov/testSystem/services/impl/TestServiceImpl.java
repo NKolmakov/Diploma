@@ -11,7 +11,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
+import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 
 @Service
@@ -74,6 +76,8 @@ public class TestServiceImpl implements TestService {
         statistic.setAverageTime(getAverageTime(passingTests));
         statistic.setPercentageCorrect(getRightAnsPercentage(passingTests));
         statistic.setGoodPerformance(getGoodPerformance(passingTests));
+        statistic.setLowestPerformance(getLowestPerformance(passingTests));
+        statistic.setRating(getRating(passingTests, user));
         return statistic;
     }
 
@@ -88,14 +92,59 @@ public class TestServiceImpl implements TestService {
         testRepo.delete(test);
     }
 
-    private String getGoodPerformance(List<PassingTest> passingTests){
+    private Integer getRating(List<PassingTest> passingTests, User user) {
+        List<StudentStatisticForm> statistics = new ArrayList<>(passingTests.size());
+        StudentStatisticForm form2Compare = null;
+        for (PassingTest test : passingTests) {
+            StudentStatisticForm form = new StudentStatisticForm();
+            form.setUser(test.getUser());
+            form.setPercentageCorrect(getRightAnsPercentage(passingTestRepo.getByUserId(test.getUser().getId())));
+            form.setAverageTime(getAverageTime(passingTestRepo.getByUserId(test.getUser().getId())));
+            statistics.add(form);
+            if (test.getUser().getId().equals(user.getId())) form2Compare = form;
+        }
+
+        statistics.sort(Comparator.comparing(StudentStatisticForm::getPercentageCorrect, (o1, o2) -> o2 - o1)
+                .thenComparing(StudentStatisticForm::getAverageTime));
+
+        computeRating(statistics);
+        return statistics.indexOf(form2Compare);
+    }
+
+    private void computeRating(List<StudentStatisticForm> userForms) {
+        userForms.sort(Comparator.comparing(StudentStatisticForm::getPercentageCorrect, (o1, o2) -> o2 - o1)
+                .thenComparing(StudentStatisticForm::getAverageTime));
+
+        for (int i = 0; i < userForms.size(); i++) {
+            if (i == 0) {
+                userForms.get(i).setRating(i + 1);
+            } else {
+                StudentStatisticForm previous = userForms.get(i - 1);
+                StudentStatisticForm current = userForms.get(i);
+
+                int previousRez = previous.getPercentageCorrect() + previous.getAverageTime();
+                int currentRez = current.getPercentageCorrect() + current.getAverageTime();
+
+                if (previousRez == currentRez) {
+                    userForms.get(i).setRating(previous.getRating());
+                } else {
+                    userForms.get(i).setRating(previous.getRating() + 1);
+                }
+
+            }
+        }
+    }
+
+    private String getLowestPerformance(List<PassingTest> passingTests) {
         StringBuilder subject = new StringBuilder();
-        int goodPercentage = 0;
-        for (PassingTest test:passingTests){
-            int currentPercentage = test.getCorrectQuestionsAmount()*100/test.getCommonQuestionsAmount();
-            if(goodPercentage < currentPercentage){
+        int badPercentage = 0;
+
+        for (PassingTest test : passingTests) {
+            int currentPercentage = test.getCorrectQuestionsAmount() * 100 / test.getCommonQuestionsAmount();
+            if (badPercentage > currentPercentage) {
                 subject = new StringBuilder(test.getTest().getSubject().getName());
-            }else if(goodPercentage == currentPercentage){
+                badPercentage = currentPercentage;
+            } else if (badPercentage == currentPercentage) {
                 subject.append(", ");
                 subject.append(test.getTest().getSubject().getName());
             }
@@ -104,18 +153,35 @@ public class TestServiceImpl implements TestService {
         return subject.toString();
     }
 
-    private Integer getRightAnsPercentage(List<PassingTest> passingTests){
-        int result = 0;
-            try {
-                int commonPercentage = 0;
-                for (PassingTest test:passingTests){
-                    commonPercentage += test.getCorrectQuestionsAmount()*100/test.getCommonQuestionsAmount();
-                }
-
-                if(passingTests.size() > 0) result = commonPercentage/passingTests.size();
-            }catch (Exception e){
-                LOGGER.warn(e);
+    private String getGoodPerformance(List<PassingTest> passingTests) {
+        StringBuilder subject = new StringBuilder();
+        int goodPercentage = 0;
+        for (PassingTest test : passingTests) {
+            int currentPercentage = test.getCorrectQuestionsAmount() * 100 / test.getCommonQuestionsAmount();
+            if (goodPercentage < currentPercentage) {
+                subject = new StringBuilder(test.getTest().getSubject().getName());
+                goodPercentage = currentPercentage;
+            } else if (goodPercentage != 0 && goodPercentage == currentPercentage) {
+                subject.append(", ");
+                subject.append(test.getTest().getSubject().getName());
             }
+        }
+
+        return subject.toString();
+    }
+
+    private Integer getRightAnsPercentage(List<PassingTest> passingTests) {
+        int result = 0;
+        try {
+            int commonPercentage = 0;
+            for (PassingTest test : passingTests) {
+                commonPercentage += test.getCorrectQuestionsAmount() * 100 / test.getCommonQuestionsAmount();
+            }
+
+            if (passingTests.size() > 0) result = commonPercentage / passingTests.size();
+        } catch (Exception e) {
+            LOGGER.warn(e);
+        }
         return result;
     }
 

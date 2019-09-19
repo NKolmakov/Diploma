@@ -10,9 +10,9 @@ import org.springframework.context.annotation.ComponentScan;
 @EnableAutoConfiguration(exclude = {ErrorMvcAutoConfiguration.class})
 @ComponentScan("com.ggkttd.kolmakov.testSystem")
 public class Application {
-	public static void main(String[] args) {
-		SpringApplication.run(Application.class, args);
-	}
+    public static void main(String[] args) {
+        SpringApplication.run(Application.class, args);
+    }
 }
 //-----------------------------------------------------------------
 //todo: add to administrator responsibility to check registered users
@@ -50,4 +50,8 @@ public class Application {
 //
 
 
-//	TODO: STOPPED AT TEST SERVICE IMPL line 69
+//	TODO: !!! stopped at debugging user statistic
+
+// todo: сделать возможность добавления изображения/видео в вопросах теста
+
+//todo: для сохранения видеофайлов добавить классу Question поле с именем видеофайла.

@@ -7,16 +7,16 @@ import com.ggkttd.kolmakov.testSystem.exceptions.AccessDeniedException;
 import com.ggkttd.kolmakov.testSystem.services.SubjectService;
 import com.ggkttd.kolmakov.testSystem.services.TestService;
 import com.ggkttd.kolmakov.testSystem.services.UserService;
-import com.ggkttd.kolmakov.testSystem.utils.TestUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.MessageSource;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.SessionAttribute;
 
-import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
-import java.io.File;
 import java.util.List;
 import java.util.Locale;
 
@@ -87,7 +87,7 @@ public class TutorController {
     }
 
     @PostMapping(value = "/createTest")
-    public String saveTest(@SessionAttribute("user") User user, Test test, ModelMap modelMap, Locale locale, HttpServletResponse response ) {
+    public String saveTest(@SessionAttribute("user") User user, Test test, ModelMap modelMap, Locale locale) {
         test.setOwner(user);
         testService.save(test);
         modelMap.addAttribute("success", true);
