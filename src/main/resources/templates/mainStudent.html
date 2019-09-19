@@ -18,7 +18,7 @@
     <!-- MOCK-->
     <div>
         <a href="getSubjects" th:text="#{form.href.passTest}"></a><br>
-        <a href="#" th:text="#{form.href.getStatistic}"></a>
+        <a href="statistic" th:text="#{form.href.getStatistic}"></a>
     </div>
 
     <th:block th:if="${showSubjects}">
@@ -41,6 +41,9 @@
     </th:block>
     <th:block th:if="${showTestResult}">
         <div th:replace="fragments/form.html::testResult"></div>
+    </th:block>
+    <th:block th:if="${showStatistic}">
+        <div th:replace="fragments/form.html::studentStatistic"></div>
     </th:block>
     <!--footer-->
     <!--    <div th:insert="fragments/general.html::footer"></div>-->

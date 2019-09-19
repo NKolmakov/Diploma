@@ -5,7 +5,6 @@ import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.autoconfigure.web.servlet.error.ErrorMvcAutoConfiguration;
 import org.springframework.context.annotation.ComponentScan;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 
 @SpringBootApplication
 @EnableAutoConfiguration(exclude = {ErrorMvcAutoConfiguration.class})
@@ -32,11 +31,10 @@ public class Application {
 //tutor after create, delete update show messages
 
 //todo: USER STATISTIC
-//пройдено тестов
-//осталось пройти тестов
+//пройдено тестов -> посмотреть какие
+//осталось пройти тестов -> посмотреть какие
 //среднее время на выполнение теста
 //процент верных ответов
-//процент неверных ответов
 //наибольшая успеваемость по предмету
 //наименьшая успеваемость по предмету
 //рейтинг среди сдавших тест (если одинаково у нескольких студентов может быть одинаковое значение рейтинга)
@@ -50,3 +48,6 @@ public class Application {
 //самая успешная группа по предмету (можно рейтинг 1-е 3 группы)
 //наименее успешная группа по предмету
 //
+
+
+//	TODO: STOPPED AT TEST SERVICE IMPL line 69

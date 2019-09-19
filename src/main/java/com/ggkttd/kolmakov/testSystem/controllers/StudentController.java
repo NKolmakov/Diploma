@@ -1,6 +1,7 @@
 package com.ggkttd.kolmakov.testSystem.controllers;
 
 import com.ggkttd.kolmakov.testSystem.domain.*;
+import com.ggkttd.kolmakov.testSystem.domain.forms.StudentStatisticForm;
 import com.ggkttd.kolmakov.testSystem.services.AnswerLogService;
 import com.ggkttd.kolmakov.testSystem.services.PassingTestService;
 import com.ggkttd.kolmakov.testSystem.services.SubjectService;
@@ -14,8 +15,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.SessionAttribute;
 
 import javax.servlet.http.HttpSession;
-import java.sql.Date;
-import java.sql.Time;
 import java.util.List;
 
 @Controller
@@ -74,10 +73,13 @@ public class StudentController {
         return "mainStudent";
     }
 
-//    @GetMapping(value="/statistic")
-//    public String getStatistic(@SessionAttribute("user")User user){
-//
-//    }
+    @GetMapping(value="/statistic")
+    public String getStatistic(@SessionAttribute("user")User user,ModelMap modelMap){
+        StudentStatisticForm statistic = testService.getStatistic(user);
+        modelMap.addAttribute("showStatistic",true);
+        modelMap.addAttribute("statistic",statistic);
+        return "mainStudent";
+    }
 
     @PostMapping(value = "/passTest")
     public String saveStudentTest(@SessionAttribute("user") User user, PassingTest passingTest, ModelMap modelMap) {

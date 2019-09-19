@@ -249,3 +249,13 @@
     </table>
 </div>
 
+<div th:fragment="studentStatistic" class="container-fluid">
+    <p th:text="#{form.stat.passed} +':'+${passed}"></p>
+    <p th:text="#{form.stat.left2Pass} +':'+${left2Pass}"></p>
+    <p th:text="#{form.stat.averageTime} +':'+${averageTime}"></p>
+    <p th:text="#{form.stat.percentageCorrect} +':'+${correct}"></p>
+    <p th:text="#{form.stat.goodPerformance} +':'+${goodPerformance}"></p>
+    <p th:text="#{form.stat.lowestPerformance} +':'+${lowestPerformance}"></p>
+    <p th:text="#{form.stat.rating} +':'+${rating}"></p>
+</div>
+

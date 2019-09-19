@@ -1,6 +1,5 @@
 package com.ggkttd.kolmakov.testSystem.services;
 
-import com.ggkttd.kolmakov.testSystem.domain.AnswerLog;
 import com.ggkttd.kolmakov.testSystem.domain.PassingTest;
 import com.ggkttd.kolmakov.testSystem.domain.Question;
 
