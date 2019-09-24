@@ -7,14 +7,12 @@ use test_system;
 create table if not exists `role`(
 	id bigint unsigned not null auto_increment primary key,
     name varchar(20) not null
-)
-CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
+);
 
 create table if not exists user_group(
 	id bigint unsigned not null auto_increment primary key,
     name varchar(20) not null
-)
-CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
+);
 
 create table if not exists user(
 	id bigint unsigned not null auto_increment primary key,
@@ -32,14 +30,12 @@ create table if not exists user(
     foreign key (user_group_id) references user_group(id)
     on update cascade
     on delete set null
-)
-CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
+);
 
 create table if not exists subject(
 	id bigint unsigned not null auto_increment primary key,
     name varchar(70) not null
-)
-CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
+);
 
 create table if not exists test(
 	id bigint unsigned not null auto_increment primary key,
@@ -47,7 +43,7 @@ create table if not exists test(
     description varchar(255),
     subject_id bigint unsigned,
     allotted_time tinyint,
-    user_id bigint unsigned not null,
+    user_id bigint unsigned,
 
     foreign key(subject_id) references subject(id)
     on update cascade
@@ -56,8 +52,7 @@ create table if not exists test(
     foreign key(user_id) references user(id)
     on update cascade
     on delete set null
-)
-CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
+);
 
 create table if not exists passing_test(
 	id bigint unsigned not null auto_increment primary key,
@@ -77,19 +72,30 @@ create table if not exists passing_test(
     foreign key(test_id) references test(id)
     on update cascade
     on delete cascade
-)
-CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
+);
+
+create table if not exists resource(
+    id bigint unsigned not null auto_increment primary key,
+    type varchar(50) not null,
+    file_name varchar(255) not null,
+    path varchar(255) not null,
+    file_length bigint not null
+);
 
 create table if not exists question(
 	id bigint unsigned not null auto_increment primary key,
     name varchar(255) not null,
-    test_id bigint unsigned,
+    resource_id bigint unsigned,
+    test_id bigint unsigned not null,
 
     foreign key(test_id) references test(id)
     on update cascade
-    on delete cascade
-)
-CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
+    on delete cascade,
+
+    foreign key(resource_id) references resource(id)
+    on update cascade
+    on delete set null
+);
 
 create table if not exists answer(
 	id bigint unsigned not null auto_increment primary key,
@@ -100,8 +106,7 @@ create table if not exists answer(
     foreign key(question_id) references question(id)
     on update cascade
     on delete cascade
-)
-CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
+);
 
 create table if not exists answer_log(
 	id bigint unsigned not null auto_increment primary key,
@@ -121,5 +126,4 @@ create table if not exists answer_log(
     foreign key(answer_id) references answer(id)
     on update cascade
     on delete cascade
-)
-CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
+);

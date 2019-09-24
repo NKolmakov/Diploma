@@ -1,7 +1,6 @@
 package com.ggkttd.kolmakov.testSystem.controllers;
 
 import com.ggkttd.kolmakov.testSystem.domain.*;
-import com.ggkttd.kolmakov.testSystem.domain.forms.StudentStatisticForm;
 import com.ggkttd.kolmakov.testSystem.services.AnswerLogService;
 import com.ggkttd.kolmakov.testSystem.services.PassingTestService;
 import com.ggkttd.kolmakov.testSystem.services.SubjectService;
@@ -73,13 +72,13 @@ public class StudentController {
         return "mainStudent";
     }
 
-    @GetMapping(value="/statistic")
-    public String getStatistic(@SessionAttribute("user")User user,ModelMap modelMap){
-        StudentStatisticForm statistic = testService.getStatistic(user);
-        modelMap.addAttribute("showStatistic",true);
-        modelMap.addAttribute("statistic",statistic);
-        return "mainStudent";
-    }
+//    @GetMapping(value="/statistic")
+//    public String getStatistic(@SessionAttribute("user")User user,ModelMap modelMap){
+//        StudentStatisticForm statistic = testService.getStatistic(user);
+//        modelMap.addAttribute("showStatistic",true);
+//        modelMap.addAttribute("statistic",statistic);
+//        return "mainStudent";
+//    }
 
     @PostMapping(value = "/passTest")
     public String saveStudentTest(@SessionAttribute("user") User user, PassingTest passingTest, ModelMap modelMap) {

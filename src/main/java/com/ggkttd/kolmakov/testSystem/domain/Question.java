@@ -1,6 +1,5 @@
 package com.ggkttd.kolmakov.testSystem.domain;
 
-import com.ggkttd.kolmakov.testSystem.exceptions.NotFoundException;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -26,26 +25,19 @@ public class Question {
     @Size(max = 255,message = "Invalid question name length")
     private String name;
 
-    @ManyToOne(cascade = CascadeType.PERSIST,fetch = FetchType.EAGER)
+    @ManyToOne(cascade = CascadeType.PERSIST)
     @JoinColumn(name = "test_id")
     private Test test;
 
     @OneToMany(mappedBy = "question",cascade = CascadeType.ALL)
     private List<Answer> answers;
 
+    @ManyToOne(cascade = CascadeType.ALL)
+    private Resource resource;
+
     @Transient
     private boolean manyRightAnswers;
-
     @Transient
     private boolean answeredRight;
 
-    public Answer getById(Long id){
-        for (Answer answer: answers){
-            if(answer.getId().equals(id)){
-                return answer;
-            }
-        }
-
-        throw new NotFoundException("ANSWER #"+id+" NOT FOUND");
-    }
 }

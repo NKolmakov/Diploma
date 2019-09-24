@@ -14,6 +14,6 @@ public interface PassingTestRepo extends JpaRepository<PassingTest,Long> {
     @Query(value = "select * from passing_test p where p.user_id = :id",nativeQuery = true)
     List<PassingTest> getByUserId(@Param("id") Long id);
 
-//    @Query(value = "select * from passing_test p where p.test_id = :id",nativeQuery = true)
-//    List<PassingTest> getByTestId(@Param("id") Long testId);
+    @Query(value = "select * from passing_test p where p.test_id = :id",nativeQuery = true)
+    List<PassingTest> getByTestId(@Param("id") Long testId);
 }

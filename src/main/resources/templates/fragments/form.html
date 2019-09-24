@@ -103,7 +103,7 @@
 </div>
 
 <div th:fragment="createTest" class="container-fluid">
-    <form class="container-fluid" action="createTest" method="post">
+    <form class="container-fluid" action="createTest" enctype="multipart/form-data" method="post">
 
         <label for="testName" th:text="#{form.label.testName}"></label>
         <input id="testName" class="form-control" name="name" type="text" maxlength="70" required>
@@ -119,7 +119,7 @@
         </select>
 
         <label for="testTime" th:text="#{form.text.allottedTime}"></label>
-        <input id="testTime" class="form-control col-1" name="allottedTime" type="number" min="0" max="255" required>
+        <input id="testTime" class="form-control col-1" name="allottedTime" type="number" min="0" max="255" value="0" required>
 
         <button class="createQuestion btn btn-success" type="button" th:text="#{form.button.createQuestion}"></button>
         <div class="questionBlock">
@@ -129,17 +129,33 @@
                     <textarea class="questionName" th:name="questions[0].name"
                               th:placeholder="#{form.placeholder.question}" maxlength="255"
                               required></textarea>
-                    <button class="createAnswer align-self-center btn btn-success" type="button" th:text="#{form.button.addAnswer}"></button>
+                    <button class="createAnswer align-self-center btn btn-success" type="button"
+                            th:text="#{form.button.addAnswer}"></button>
                 </div>
                 <div id="answer#0" class="answers container row align-items-center my-2">
-<!--                    <input type="checkbox" class="custom-control-input" id="defaultUnchecked">-->
-                    <input th:id="'input#0'" class="custom-control-input" th:name="questions[0].answers[0].right" type="checkbox">
+                    <!--                    <input type="checkbox" class="custom-control-input" id="defaultUnchecked">-->
+                    <input th:id="'input#0'" class="custom-control-input" th:name="questions[0].answers[0].right"
+                           type="checkbox">
                     <label class="custom-control-label align-self-center" th:for="'input#0'"></label>
                     <textarea class="form-control form-control col-lg-3 col-md-6" th:name="questions[0].answers[0].name"
                               th:placeholder="#{form.placeholder.answer}" maxlength="255" required></textarea><br>
                 </div>
             </div>
         </div>
+
+<!--        <input type="file" th:src="@{C:\Projects\TESTS\testMovie.mp4}" name="file" accept="video/*">-->
+        <input type="file" name="file" accept="video/*">
+        <input type="file" name="file" accept="image/*">
+        <input hidden th:name="questions[0].resource.fileName" value="testMovie.mp4">
+        <input hidden th:name="questions[1].resource.fileName" value="ggkttd-logo.png">
+<!--        <input type="file" th:src="@{C:\Projects\TESTS\testMovie.mp4}" name="video" accept="video/*">-->
+<!--        <input type="file" th:src="@{C:\Projects\TESTS\testMovie.mp4}" name="video" accept="video/*">-->
+
+
+<!--        <video width="320px" height="320px">-->
+<!--            <source src="C:\Projects\TESTS\testMovie.mp4" type="video/mp4">-->
+<!--        </video>-->
+<!--        <video th:src="@{C:\Projects\TESTS\testMovie.mp4}" width="320px" height="320px"></video>-->
         <button class="btn btn-primary" type="submit" th:text="#{form.button.save}"></button>
     </form>
 </div>
@@ -162,7 +178,8 @@
                     th:value="${subject.id}" th:text="${subject.name}"></option>
         </select>
 
-        <input id="testTime" name="allottedTime" type="number" min="0" max="255" required th:value="${test.allottedTime}">
+        <input id="testTime" name="allottedTime" type="number" min="0" max="255" required
+               th:value="${test.allottedTime}">
         <label for="testTime" th:text="#{form.text.allottedTime}"></label>
 
         <button class="createQuestion btn btn-success" type="button" th:text="#{form.button.createQuestion}"></button>
@@ -240,11 +257,13 @@
 <div th:fragment="testGrid" class="container-fluid">
     <table class="table table-striped">
         <tbody>
-            <tr th:each="test: ${tests}">
-                <th scope="row"></th>
-                <td th:id="${test.id}" th:text="${test.name}"></td>
-                <td><button class="download btn btn-primary" th:text="#{form.button.download}"></button> </td>
-            </tr>
+        <tr th:each="test: ${tests}">
+            <th scope="row"></th>
+            <td th:id="${test.id}" th:text="${test.name}"></td>
+            <td>
+                <button class="download btn btn-primary" th:text="#{form.button.download}"></button>
+            </td>
+        </tr>
         </tbody>
     </table>
 </div>

@@ -1,9 +1,9 @@
 package com.ggkttd.kolmakov.testSystem.domain;
 
-import com.ggkttd.kolmakov.testSystem.exceptions.NotFoundException;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.springframework.web.multipart.MultipartFile;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotBlank;
@@ -40,4 +40,7 @@ public class Test {
     @ManyToOne(cascade = CascadeType.MERGE)
     @JoinColumn(name = "user_id")
     private User owner;
+
+    @Transient
+    private MultipartFile[] files;
 }

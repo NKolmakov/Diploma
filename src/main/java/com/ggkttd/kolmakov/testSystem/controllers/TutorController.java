@@ -11,10 +11,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.MessageSource;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.SessionAttribute;
+import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import javax.servlet.http.HttpSession;
 import java.util.List;
@@ -78,8 +76,8 @@ public class TutorController {
         return "mainTutor";
     }
 
-    @GetMapping(value="/getTestGrid")
-    public String getTestListAsGrid(@SessionAttribute("user") User user,ModelMap modelMap){
+    @GetMapping(value = "/getTestGrid")
+    public String getTestListAsGrid(@SessionAttribute("user") User user, ModelMap modelMap) {
         List<Test> tests = testService.getByTutorId(user.getId());
         modelMap.addAttribute("testGrid", true);
         modelMap.addAttribute("tests", tests);
@@ -87,8 +85,10 @@ public class TutorController {
     }
 
     @PostMapping(value = "/createTest")
-    public String saveTest(@SessionAttribute("user") User user, Test test, ModelMap modelMap, Locale locale) {
+    public String saveTest(@SessionAttribute("user") User user, Test test, ModelMap modelMap, Locale locale,
+                           @RequestParam(name = "file",required = false) MultipartFile[] multipartFiles) {
         test.setOwner(user);
+        test.setFiles(multipartFiles);
         testService.save(test);
         modelMap.addAttribute("success", true);
         modelMap.addAttribute("message", messageSource.getMessage("message.notif.testSaved", new Object[]{}, locale));
