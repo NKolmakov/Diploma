@@ -33,4 +33,8 @@ public class Answer {
 
     @Transient
     private boolean checked;
+
+    public Answer(@NotBlank @Size(max = 255, message = "Invalid answer name length") String name) {
+        this.name = name;
+    }
 }

@@ -40,4 +40,12 @@ public class Question {
     @Transient
     private boolean answeredRight;
 
+    public Question(@NotBlank @Size(max = 255, message = "Invalid question name length") String name) {
+        this.name = name;
+    }
+
+    public Question(@NotBlank @Size(max = 255, message = "Invalid question name length") String name, List<Answer> answers) {
+        this.name = name;
+        this.answers = answers;
+    }
 }

@@ -3,14 +3,14 @@ package com.ggkttd.kolmakov.testSystem.services.impl;
 import com.ggkttd.kolmakov.testSystem.domain.Answer;
 import com.ggkttd.kolmakov.testSystem.domain.Question;
 import com.ggkttd.kolmakov.testSystem.domain.Test;
+import com.ggkttd.kolmakov.testSystem.exceptions.InvalidTestException;
 import com.ggkttd.kolmakov.testSystem.exceptions.NotFoundException;
 import com.ggkttd.kolmakov.testSystem.repo.PassingTestRepo;
 import com.ggkttd.kolmakov.testSystem.repo.TestRepo;
 import com.ggkttd.kolmakov.testSystem.services.TestService;
-import org.apache.commons.io.FilenameUtils;
+import com.ggkttd.kolmakov.testSystem.utils.TestUtils;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -19,21 +19,24 @@ import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.text.SimpleDateFormat;
-import java.util.*;
+import java.util.Collections;
+import java.util.Date;
+import java.util.LinkedList;
+import java.util.List;
 
 @Service
 @Transactional
 public class TestServiceImpl implements TestService {
     private static final Logger LOGGER = Logger.getLogger(TestServiceImpl.class);
 
-    @Value("${test.data.home}")
-    private String homeDir;
-
     @Autowired
     private TestRepo testRepo;
 
     @Autowired
     private PassingTestRepo passingTestRepo;
+
+    @Autowired
+    private TestUtils testUtils;
 
     @Override
     public Test getOne(Long id) {
@@ -104,20 +107,24 @@ public class TestServiceImpl implements TestService {
     private void saveMultipartFiles(Test test) {
         SimpleDateFormat formatter = new SimpleDateFormat("dd.MM.yyyy");
         Date date = new Date();
-        String currentPath = homeDir + "\\" + test.getOwner().getLogin() + "\\" + formatter.format(date) + "\\";
+        String currentPath = test.getOwner().getLogin() + "\\" + formatter.format(date) + "\\";
         new File(currentPath).mkdirs();
 
-        if (test.getFiles() != null) {
-            for (MultipartFile file : test.getFiles()) {
-                List<Question> questions = getQuestions(test.getQuestions(), file.getOriginalFilename());
-                File savedFile = saveMultipartFile(file, currentPath);
-                for (Question question : questions) {
-                    question.getResource().setPath(currentPath);
-                    question.getResource().setFileName(savedFile.getName());
-                    question.getResource().setFileLength(savedFile.length());
-                    question.getResource().setType(getFileType(savedFile));
+        try {
+            if (test.getFiles() != null) {
+                for (MultipartFile file : test.getFiles()) {
+                    List<Question> questions = getQuestions(test.getQuestions(), file.getOriginalFilename());
+                    File savedFile = testUtils.saveMultipartFile(file, currentPath);
+                    for (Question question : questions) {
+                        question.getResource().setPath(currentPath);
+                        question.getResource().setFileName(savedFile.getName());
+                        question.getResource().setFileLength(savedFile.length());
+                        question.getResource().setType(getFileType(savedFile));
+                    }
                 }
             }
+        } catch (IOException e) {
+            LOGGER.warn(e);
         }
     }
 
@@ -131,19 +138,6 @@ public class TestServiceImpl implements TestService {
         }
 
         return type;
-    }
-
-    private File saveMultipartFile(MultipartFile file, String currentDir) {
-        String extension = FilenameUtils.getExtension(file.getOriginalFilename());
-        String newFileName = currentDir + UUID.randomUUID().toString() + "." + extension;
-        File savedFile = new File(newFileName);
-        try {
-            file.transferTo(savedFile);
-        } catch (IOException e) {
-            LOGGER.warn(e);
-        }
-
-        return savedFile;
     }
 
     private List<Question> getQuestions(List<Question> questions, String name) {
@@ -272,15 +266,23 @@ public class TestServiceImpl implements TestService {
 //    }
 
     private void validateTest(Test test) {
-        for (Question question : test.getQuestions()) {
-            if (question.getTest() == null) {
-                question.setTest(test);
-            }
-            for (Answer answer : question.getAnswers()) {
-                if (answer.getQuestion() == null) {
-                    answer.setQuestion(question);
+        if (test.getQuestions() != null) {
+            for (Question question : test.getQuestions()) {
+                if (question.getTest() == null) {
+                    question.setTest(test);
+                }
+                if (question.getAnswers() != null) {
+                    for (Answer answer : question.getAnswers()) {
+                        if (answer.getQuestion() == null) {
+                            answer.setQuestion(question);
+                        }
+                    }
+                } else {
+                    throw new InvalidTestException("QUESTION " + question.getName() + " DOESN'T CONTAIN ANY ANSWERS");
                 }
             }
+        } else {
+            throw new InvalidTestException("TEST DOESN'T CONTAIN ANY QUESTIONS");
         }
     }
 }

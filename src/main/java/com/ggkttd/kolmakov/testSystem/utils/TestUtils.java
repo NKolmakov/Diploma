@@ -5,11 +5,14 @@ import com.ggkttd.kolmakov.testSystem.domain.AnswerLog;
 import com.ggkttd.kolmakov.testSystem.domain.Question;
 import com.ggkttd.kolmakov.testSystem.domain.Test;
 import com.ggkttd.kolmakov.testSystem.exceptions.NotFoundException;
+import org.apache.commons.io.FilenameUtils;
 import org.apache.poi.xwpf.usermodel.*;
 import org.apache.xmlbeans.XmlException;
-import org.openxmlformats.schemas.wordprocessingml.x2006.main.*;
+import org.openxmlformats.schemas.wordprocessingml.x2006.main.CTAbstractNum;
+import org.openxmlformats.schemas.wordprocessingml.x2006.main.CTNumbering;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.io.File;
 import java.io.FileOutputStream;
@@ -19,12 +22,24 @@ import java.nio.charset.StandardCharsets;
 import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.UUID;
 
 @Component
 public class TestUtils {
 
     @Value(value = "${docxHome}")
     private String docxHome;
+    @Value("${test.data.home}")
+    private String homeDir;
+
+    public File saveMultipartFile(MultipartFile file, String currentDir) throws IOException {
+        String extension = FilenameUtils.getExtension(file.getOriginalFilename());
+        String newFileName = homeDir + "\\" + currentDir + UUID.randomUUID().toString() + "." + extension;
+        File savedFile = new File(newFileName);
+        file.transferTo(savedFile);
+
+        return savedFile;
+    }
 
     public List<Question> getResultFromUserAnswers(Test test, List<AnswerLog> logsFromDb) {
         List<Question> questions = new LinkedList<>();

@@ -84,6 +84,11 @@ public class TutorController {
         return "mainTutor";
     }
 
+    @GetMapping(value="/generateTest")
+    public String getGeneratedTest(@RequestParam("doc")MultipartFile multipartFile){
+        return null;
+    }
+
     @PostMapping(value = "/createTest")
     public String saveTest(@SessionAttribute("user") User user, Test test, ModelMap modelMap, Locale locale,
                            @RequestParam(name = "file",required = false) MultipartFile[] multipartFiles) {
@@ -108,4 +113,6 @@ public class TutorController {
         testService.delete(testFromDb);
         return "mainTutor";
     }
+
+
 }

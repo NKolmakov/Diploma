@@ -43,4 +43,8 @@ public class Test {
 
     @Transient
     private MultipartFile[] files;
+
+    public Test(List<Question> questions) {
+        this.questions = questions;
+    }
 }
