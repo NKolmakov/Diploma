@@ -4,6 +4,7 @@ import com.ggkttd.kolmakov.testSystem.domain.*;
 import com.ggkttd.kolmakov.testSystem.exceptions.NotFoundException;
 import com.ibm.icu.text.CharsetDetector;
 import org.apache.commons.io.FilenameUtils;
+import org.apache.log4j.Logger;
 import org.apache.poi.xwpf.usermodel.*;
 import org.apache.xmlbeans.XmlException;
 import org.openxmlformats.schemas.wordprocessingml.x2006.main.CTAbstractNum;
@@ -21,6 +22,7 @@ import java.util.*;
 
 @Component
 public class TestUtils {
+    private static final Logger LOGGER = Logger.getLogger(TestUtils.class);
 
     @Value(value = "${docxHome}")
     private String docxHome;
@@ -101,14 +103,14 @@ public class TestUtils {
 
     public File saveTest2File(Test test) {
         new File(docxHome).mkdirs();
-        String fileName = docxHome + test.getOwner().getName() + " " + test.getOwner().getSurname() + " " + test.getName() + ".docx";
+        String fileName = docxHome + test.getOwner().getName() + "\\ " + test.getOwner().getSurname() + " " + test.getName() + ".docx";
         try {
             File file = new File(fileName);
             file.createNewFile();
             write2Document(test, file);
             return file;
         } catch (IOException e) {
-            e.printStackTrace();
+            LOGGER.warn("CAN'T SAVE TEST TO FILE CAUSE OF: ",e);
         }
         return null;
     }

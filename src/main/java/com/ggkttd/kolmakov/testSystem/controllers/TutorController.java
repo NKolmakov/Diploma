@@ -87,10 +87,10 @@ public class TutorController {
         return "mainTutor";
     }
 
-    @GetMapping(value = "/generateTest")
-    public String getGeneratedTest(@RequestParam("doc") MultipartFile multipartFile, @SessionAttribute("user") User user) {
+    //@GetMapping(value = "/generateTest")
+    //public String getGeneratedTest(@RequestParam("doc") MultipartFile multipartFile, @SessionAttribute("user") User user) {
 
-    }
+   // }
 
     @PostMapping(value = "/createTest")
     public String saveTest(@SessionAttribute("user") User user, Test test, ModelMap modelMap, Locale locale,
