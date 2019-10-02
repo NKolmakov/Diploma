@@ -6,10 +6,7 @@ import com.ggkttd.kolmakov.testSystem.domain.Test;
 import org.apache.log4j.Logger;
 import org.springframework.stereotype.Component;
 
-import java.io.BufferedReader;
-import java.io.File;
-import java.io.FileReader;
-import java.io.IOException;
+import java.io.*;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.regex.Matcher;
@@ -25,7 +22,14 @@ public class DocumentProcessor {
     public Test generateFromFile(File file) {
         List<String> definitions;
         List<Question> questions = new LinkedList<>();
-        try (BufferedReader reader = new BufferedReader(new FileReader(file))) {
+        try (BufferedReader reader = new BufferedReader(new InputStreamReader(new FileInputStream(file), "UTF-8"))) {
+            String line;
+            String text;
+            StringBuilder builder = new StringBuilder();
+            while ((line = reader.readLine()) != null) {
+                builder.append(line);
+            }
+            text = builder.toString();
             definitions = getFromRegex(DEFINITION_REGEX, text);
             for (String definition : definitions) {
                 List<Answer> answers = new LinkedList<>();

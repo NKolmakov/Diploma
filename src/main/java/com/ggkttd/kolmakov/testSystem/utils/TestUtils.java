@@ -1,10 +1,8 @@
 package com.ggkttd.kolmakov.testSystem.utils;
 
-import com.ggkttd.kolmakov.testSystem.domain.Answer;
-import com.ggkttd.kolmakov.testSystem.domain.AnswerLog;
-import com.ggkttd.kolmakov.testSystem.domain.Question;
-import com.ggkttd.kolmakov.testSystem.domain.Test;
+import com.ggkttd.kolmakov.testSystem.domain.*;
 import com.ggkttd.kolmakov.testSystem.exceptions.NotFoundException;
+import com.ibm.icu.text.CharsetDetector;
 import org.apache.commons.io.FilenameUtils;
 import org.apache.poi.xwpf.usermodel.*;
 import org.apache.xmlbeans.XmlException;
@@ -18,11 +16,8 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.math.BigInteger;
-import java.nio.charset.StandardCharsets;
-import java.util.Collections;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.UUID;
+import java.text.SimpleDateFormat;
+import java.util.*;
 
 @Component
 public class TestUtils {
@@ -31,6 +26,14 @@ public class TestUtils {
     private String docxHome;
     @Value("${test.data.home}")
     private String homeDir;
+
+    public String getUserDirectory(User user) {
+        SimpleDateFormat formatter = new SimpleDateFormat("dd.MM.yyyy");
+        Date date = new Date();
+        String currentPath = user.getLogin() + "\\" + formatter.format(date) + "\\";
+        new File(currentPath).mkdirs();
+        return currentPath;
+    }
 
     public File saveMultipartFile(MultipartFile file, String currentDir) throws IOException {
         String extension = FilenameUtils.getExtension(file.getOriginalFilename());
@@ -111,7 +114,10 @@ public class TestUtils {
     }
 
     public String convert2Utf8(String string) {
-        return new String(string.getBytes(StandardCharsets.ISO_8859_1), StandardCharsets.UTF_8);
+        CharsetDetector detector = new CharsetDetector();
+        detector.setText(string.getBytes());
+        return detector.getString(string.getBytes(), "UTF_8");
+//        return new String(string.getBytes(StandardCharsets.ISO_8859_1), StandardCharsets.UTF_8);
     }
 
     private static final String cTAbstractNumDecimalXML =

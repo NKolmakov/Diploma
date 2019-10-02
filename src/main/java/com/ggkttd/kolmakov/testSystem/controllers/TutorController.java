@@ -7,6 +7,7 @@ import com.ggkttd.kolmakov.testSystem.exceptions.AccessDeniedException;
 import com.ggkttd.kolmakov.testSystem.services.SubjectService;
 import com.ggkttd.kolmakov.testSystem.services.TestService;
 import com.ggkttd.kolmakov.testSystem.services.UserService;
+import com.ggkttd.kolmakov.testSystem.utils.TestUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.MessageSource;
 import org.springframework.stereotype.Controller;
@@ -29,6 +30,8 @@ public class TutorController {
     private SubjectService subjectService;
     @Autowired
     private UserService userService;
+    @Autowired
+    private TestUtils testUtils;
 
     @GetMapping(value = "/mainTutor")
     public String getHomePage(ModelMap modelMap, HttpSession session) {
@@ -84,14 +87,14 @@ public class TutorController {
         return "mainTutor";
     }
 
-    @GetMapping(value="/generateTest")
-    public String getGeneratedTest(@RequestParam("doc")MultipartFile multipartFile){
-        return null;
+    @GetMapping(value = "/generateTest")
+    public String getGeneratedTest(@RequestParam("doc") MultipartFile multipartFile, @SessionAttribute("user") User user) {
+
     }
 
     @PostMapping(value = "/createTest")
     public String saveTest(@SessionAttribute("user") User user, Test test, ModelMap modelMap, Locale locale,
-                           @RequestParam(name = "file",required = false) MultipartFile[] multipartFiles) {
+                           @RequestParam(name = "file", required = false) MultipartFile[] multipartFiles) {
         test.setOwner(user);
         test.setFiles(multipartFiles);
         testService.save(test);

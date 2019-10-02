@@ -3,8 +3,10 @@ package com.ggkttd.kolmakov.testSystem.services.impl;
 import com.ggkttd.kolmakov.testSystem.domain.Answer;
 import com.ggkttd.kolmakov.testSystem.domain.Question;
 import com.ggkttd.kolmakov.testSystem.domain.Test;
+import com.ggkttd.kolmakov.testSystem.domain.User;
 import com.ggkttd.kolmakov.testSystem.exceptions.InvalidTestException;
 import com.ggkttd.kolmakov.testSystem.exceptions.NotFoundException;
+import com.ggkttd.kolmakov.testSystem.processor.DocumentProcessor;
 import com.ggkttd.kolmakov.testSystem.repo.PassingTestRepo;
 import com.ggkttd.kolmakov.testSystem.repo.TestRepo;
 import com.ggkttd.kolmakov.testSystem.services.TestService;
@@ -18,9 +20,7 @@ import javax.transaction.Transactional;
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
-import java.text.SimpleDateFormat;
 import java.util.Collections;
-import java.util.Date;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -31,12 +31,12 @@ public class TestServiceImpl implements TestService {
 
     @Autowired
     private TestRepo testRepo;
-
     @Autowired
     private PassingTestRepo passingTestRepo;
-
     @Autowired
     private TestUtils testUtils;
+    @Autowired
+    private DocumentProcessor documentProcessor;
 
     @Override
     public Test getOne(Long id) {
@@ -104,12 +104,19 @@ public class TestServiceImpl implements TestService {
         testRepo.delete(test);
     }
 
-    private void saveMultipartFiles(Test test) {
-        SimpleDateFormat formatter = new SimpleDateFormat("dd.MM.yyyy");
-        Date date = new Date();
-        String currentPath = test.getOwner().getLogin() + "\\" + formatter.format(date) + "\\";
-        new File(currentPath).mkdirs();
+    @Override
+    public Test generateFromLecture(MultipartFile multipartFile, User user) {
+        try {
+            File file = testUtils.saveMultipartFile(multipartFile, testUtils.getUserDirectory(user));
+            return documentProcessor.generateFromFile(file);
+        } catch (IOException e) {
+            LOGGER.warn("CAN'T SAVE FILE " + multipartFile.getName() + " CASE OF: ", e);
+        }
+        return null;
+    }
 
+    private void saveMultipartFiles(Test test) {
+        String currentPath = testUtils.getUserDirectory(test.getOwner());
         try {
             if (test.getFiles() != null) {
                 for (MultipartFile file : test.getFiles()) {
